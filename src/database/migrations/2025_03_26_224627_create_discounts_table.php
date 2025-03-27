@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('discount_percentage', 5, 2);
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
