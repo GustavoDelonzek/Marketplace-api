@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('address_id')->constrained()->onDelete('cascade');
             $table->dateTime('order_date');
             $table->foreignId('coupon_id')->nullable()->constrained();
-            $table->enum('status', ['pending', 'processing', 'shipped', 'completed', 'canceled']);
+            $table->enum('status', ['pending', 'processing', 'shipped', 'completed', 'canceled'])->default('pending');
             $table->decimal('total_amount', 10, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
