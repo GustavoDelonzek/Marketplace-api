@@ -18,7 +18,7 @@ return new class extends Migration
             $table->dateTime('order_date');
             $table->foreignId('coupon_id')->nullable()->constrained();
             $table->enum('status', ['pending', 'processing', 'shipped', 'completed', 'canceled']);
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 10, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
