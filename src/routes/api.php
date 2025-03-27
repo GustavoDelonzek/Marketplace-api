@@ -27,4 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/me', [UserController::class, 'showMe']);
     Route::put('users/me', [UserController::class, 'updateMe']);
     Route::delete('users/me', [UserController::class, 'deleteMe']);
+    Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
 });

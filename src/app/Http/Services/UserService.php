@@ -39,4 +39,13 @@ class UserService{
     public function deleteMe(User $user){
         return $this->userRepository->deleteUser($user);
     }
+
+    public function createModerator(User $user, $newUser){
+        if($user->role !== 'admin'){
+            throw new Error('No permission to create a Moderator', 401);
+        }
+        $newUser['role'] = 'moderator';
+
+        return $this->userRepository->createUser($newUser);
+    }
 }

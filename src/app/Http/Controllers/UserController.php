@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Services\UserService;
 use Error;
@@ -25,9 +26,10 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function storeModerator(RegisterUserRequest $request)
     {
-        //
+        $validated = $request->validated();
+        return response()->json($this->userService->createModerator(Auth::user(), $validated));
     }
 
 
