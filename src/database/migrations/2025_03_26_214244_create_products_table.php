@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedInteger('stock');
             $table->decimal('price', 10, 2);
+            $table->foreignId('discount_id')->nullable()->constrained();
             $table->softDeletes();
             $table->timestamps();
         });
