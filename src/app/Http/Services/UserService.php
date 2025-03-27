@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\UserRepository;
+use App\Models\User;
 use Error;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,5 +30,13 @@ class UserService{
     public function register($user){
         $user['password'] = Hash::make($user['password']);
         return $this->userRepository->createUser($user);
+    }
+
+    public function updateMe(User $user, $userUpdates){
+        return $this->userRepository->updateUser($user, $userUpdates);
+    }
+
+    public function deleteMe(User $user){
+        return $this->userRepository->deleteUser($user);
     }
 }

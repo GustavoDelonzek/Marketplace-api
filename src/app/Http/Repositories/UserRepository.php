@@ -17,4 +17,13 @@ class UserRepository{
     public function getUserByEmail($email){
         return User::where('email', $email)->first();
     }
+
+    public function updateUser(User $user, $userUpdates){
+        return $user->update($userUpdates);
+    }
+
+    public function deleteUser(User $user){
+        return $user->delete();
+    }
+
 }
