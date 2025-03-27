@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->unsignedInteger('quantity');
             $table->decimal('unit_price', 10, 2);
-            $table->softDeletes();
             $table->timestamps();
         });
     }
