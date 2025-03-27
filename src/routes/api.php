@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -28,4 +29,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('users/me', [UserController::class, 'updateMe']);
     Route::delete('users/me', [UserController::class, 'deleteMe']);
     Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
+    Route::apiResource('address', AddressController::class);
 });

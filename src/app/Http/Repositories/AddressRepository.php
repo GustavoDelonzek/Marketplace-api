@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Http\Repositories;
+
+use App\Models\Address;
+
+class AddressRepository{
+    public function getAllAddressByUser($userId){
+        return Address::where('user_id', $userId)->get();
+    }
+}
