@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\AddressRepository;
+use Error;
 
 class AddressService{
     public function __construct(protected AddressRepository $addressRepository)
@@ -17,6 +18,16 @@ class AddressService{
         $addressData['user_id'] = $userId;
 
         return $this->addressRepository->createAddress($addressData);
+    }
+
+    public function showAddress(int $addressId, int $userLogado){
+        $address = $this->addressRepository->getAddressById($addressId);
+
+        if($address->user_id !== $userLogado){
+            throw new Error("Permission denied to access this address ", 401);
+        }
+
+        return $address;
     }
 
 

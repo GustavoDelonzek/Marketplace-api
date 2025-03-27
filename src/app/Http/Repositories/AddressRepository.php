@@ -13,5 +13,8 @@ class AddressRepository{
         return Address::create($address);
     }
 
+    public function getAddressById($addressId){
+        return Address::findOrFail($addressId);
+    }
 
 }

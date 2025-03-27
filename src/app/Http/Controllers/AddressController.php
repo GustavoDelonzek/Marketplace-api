@@ -45,9 +45,11 @@ class AddressController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $address)
     {
-        //
+        return response()->json([
+            'address' => $this->addressService->showAddress($address, Auth::id())
+        ], 202);
     }
 
     /**
