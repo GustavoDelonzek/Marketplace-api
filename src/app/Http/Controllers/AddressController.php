@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAddressRequest;
 use App\Http\Services\AddressService;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,9 +26,20 @@ class AddressController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAddressRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $address = $this->addressService->createAddress(Auth::id(), $validated);
+
+        if(!$address){
+            throw new Error('Error creating address');
+        }
+
+        return response()->json([
+            'message' => "Created successfully"
+        ], 201);
+
     }
 
     /**

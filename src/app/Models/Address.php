@@ -19,7 +19,7 @@ class Address extends Model
         'zip',
         'city',
         'state',
-        'city',
+        'country',
     ];
 
     public function user():BelongsTo
@@ -31,5 +31,5 @@ class Address extends Model
     {
         return $this->hasMany(Order::class);
     }
-    
+
 }

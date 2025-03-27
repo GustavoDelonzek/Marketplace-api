@@ -13,5 +13,11 @@ class AddressService{
         return $this->addressRepository->getAllAddressByUser($userId);
     }
 
-    
+    public function createAddress(int $userId, $addressData){
+        $addressData['user_id'] = $userId;
+
+        return $this->addressRepository->createAddress($addressData);
+    }
+
+
 }
