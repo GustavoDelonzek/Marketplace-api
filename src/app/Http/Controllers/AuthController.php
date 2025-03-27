@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Services\UserService;
 use Illuminate\Http\Request;
@@ -11,6 +12,13 @@ class AuthController extends Controller
 
     public function __construct(protected UserService $userService)
     {
+    }
+
+
+    public function login(LoginUserRequest $request){
+        $validated = $request->validated();
+
+        return $this->userService->login($validated);
     }
 
     public function register(RegisterUserRequest $request)
