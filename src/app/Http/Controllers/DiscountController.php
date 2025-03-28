@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDiscountRequest;
+use App\Http\Requests\UpdateDiscountRequest;
 use App\Http\Services\DiscountService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,9 +49,16 @@ class DiscountController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateDiscountRequest $request, string $discount)
     {
-        //
+        $validated = $request->validated();
+
+        $updated = $this->discountService->updateDiscount(Auth::user(), $discount, $validated);
+
+        return response()->json([
+            'message' => 'updated successfully'
+        ], 200);
+
     }
 
     /**
