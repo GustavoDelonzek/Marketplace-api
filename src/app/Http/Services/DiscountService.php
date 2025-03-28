@@ -51,6 +51,13 @@ class DiscountService{
 
     }
 
+    public function deleteDiscount(User $user, int $discountId){
+        if($user->role !== 'admin'){
+            throw new Error('Permission denied for this action', 401);
+        }
+        return $this->discountRepository->deleteDiscount($discountId);
+    }
+
 
 
 }

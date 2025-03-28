@@ -64,8 +64,12 @@ class DiscountController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $discount)
     {
-        //
+        $deleted = $this->discountService->deleteDiscount(Auth::user(), $discount);
+
+        return response()->json([
+            'message' => 'deleted successfully'
+        ], 200);
     }
 }
