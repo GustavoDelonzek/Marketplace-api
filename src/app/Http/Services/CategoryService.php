@@ -23,4 +23,8 @@ class CategoryService{
 
         return $this->categoryRepository->createCategory($categoryData);
     }
+
+    public function showCategory($categoryId){
+        return $this->categoryRepository->showCategory($categoryId);
+    }
 }
