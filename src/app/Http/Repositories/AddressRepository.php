@@ -17,4 +17,8 @@ class AddressRepository{
         return Address::findOrFail($addressId);
     }
 
+    public function updateAddress($addressId,$addressData){
+        return Address::where('id', $addressId)->update($addressData);
+    }
+
 }

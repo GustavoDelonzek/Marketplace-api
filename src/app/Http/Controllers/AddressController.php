@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAddressRequest;
+use App\Http\Requests\UpdateAddressRequest;
 use App\Http\Services\AddressService;
 use Error;
 use Illuminate\Http\Request;
@@ -55,9 +56,12 @@ class AddressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateAddressRequest $request, int $address)
     {
-        //
+        $validated = $request->validated();
+
+        return $this->addressService->updateAddress($validated, $address, Auth::id());
+
     }
 
     /**

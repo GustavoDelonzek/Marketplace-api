@@ -30,5 +30,17 @@ class AddressService{
         return $address;
     }
 
+    public function updateAddress($addressData, $addressId, $userId){
+        $address = $this->addressRepository->getAddressById($addressId);
+
+        if($address->user_id !== $userId){
+            throw new Error('Permission denied to update this address');
+        }
+        $updated = $this->addressRepository->updateAddress($addressId, $addressData);
+
+        return response()->json([
+            'message' => 'Updated successfully'
+        ]);
+    }
 
 }
