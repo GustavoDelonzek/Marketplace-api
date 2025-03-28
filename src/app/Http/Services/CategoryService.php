@@ -27,4 +27,13 @@ class CategoryService{
     public function showCategory($categoryId){
         return $this->categoryRepository->showCategory($categoryId);
     }
+
+    public function updateCategory($categoryData, $categoryId,User $user){
+        if($user->role !== 'admin'){
+            throw new Error('Permission denied for this action');
+        }
+
+        return $this->categoryRepository->updateCategory($categoryId, $categoryData);
+
+    }
 }
