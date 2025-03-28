@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Services\CategoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -24,9 +26,15 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $created = $this->categoryService->createCategory(Auth::user(), $validated);
+
+        return response()->json([
+            'Message' => 'Category created successfully'
+        ], 201);
     }
 
     /**

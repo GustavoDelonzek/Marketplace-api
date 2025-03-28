@@ -3,6 +3,8 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\CategoryRepository;
+use App\Models\User;
+use Error;
 
 class CategoryService{
 
@@ -12,5 +14,13 @@ class CategoryService{
 
     public function getAllCategories(){
         return $this->categoryRepository->getAllCategories();
+    }
+
+    public function createCategory(User $user, $categoryData){
+        if($user->role !== 'admin'){
+            throw new Error('Permission denied for this action');
+        }
+
+        return $this->categoryRepository->createCategory($categoryData);
     }
 }
