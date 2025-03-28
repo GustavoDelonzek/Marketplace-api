@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Services\CategoryService;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,7 +53,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, int $category)
     {
         $validated = $request->validated();
-
+        
         $updated = $this->categoryService->updateCategory($validated, $category, Auth::user());
 
         return response()->json([
@@ -63,8 +64,12 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $category)
     {
-        //
+        $deleted = $this->categoryService->deleteCategory($category, Auth::user());
+
+        return response()->json([
+            'message' => 'Category deleted successfully'
+        ], 204);
     }
 }

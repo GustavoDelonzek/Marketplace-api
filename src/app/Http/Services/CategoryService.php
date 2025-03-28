@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Repositories\CategoryRepository;
 use App\Models\User;
 use Error;
+use Exception;
 
 class CategoryService{
 
@@ -29,11 +30,24 @@ class CategoryService{
     }
 
     public function updateCategory($categoryData, $categoryId,User $user){
+
         if($user->role !== 'admin'){
             throw new Error('Permission denied for this action');
         }
 
+        if(empty($categoryData)){
+            throw new Exception('Nothing to update!', 204);
+        }
+
         return $this->categoryRepository->updateCategory($categoryId, $categoryData);
 
+    }
+
+    public function deleteCategory($categoryId,User $user){
+        if($user->role !== 'admin'){
+            throw new Error('Permission denied for this action');
+        }
+
+        return $this->categoryRepository->deleteCategory($categoryId);
     }
 }
