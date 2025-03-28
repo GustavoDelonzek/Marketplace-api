@@ -23,6 +23,10 @@ class DiscountService{
         return $this->discountRepository->createDiscount($discountData);
     }
 
+    public function showDiscount(int $discountId){
+        return $this->discountRepository->showDiscount($discountId);
+    }
+
 
 
 

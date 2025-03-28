@@ -56,7 +56,7 @@ class AddressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAddressRequest $request, int $address)
+    public function update(UpdateAddressRequest $request, string $address)
     {
         $validated = $request->validated();
 

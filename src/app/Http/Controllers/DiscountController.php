@@ -40,9 +40,9 @@ class DiscountController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $discount)
     {
-        //
+        return response()->json($this->discountService->showDiscount($discount));
     }
 
     /**

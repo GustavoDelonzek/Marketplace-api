@@ -50,10 +50,10 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, int $category)
+    public function update(UpdateCategoryRequest $request, string $category)
     {
         $validated = $request->validated();
-        
+
         $updated = $this->categoryService->updateCategory($validated, $category, Auth::user());
 
         return response()->json([
