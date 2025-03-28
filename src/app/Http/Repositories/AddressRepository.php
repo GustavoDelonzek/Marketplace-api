@@ -21,4 +21,8 @@ class AddressRepository{
         return Address::where('id', $addressId)->update($addressData);
     }
 
+    public function deleteAddress($addressId){
+        return Address::where('id', $addressId)->delete();
+    }
+
 }

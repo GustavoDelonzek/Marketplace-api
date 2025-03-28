@@ -43,4 +43,19 @@ class AddressService{
         ]);
     }
 
+    public function deleteAddress($addressId, $userId){
+        $address = $this->addressRepository->getAddressById($addressId);
+
+        if($address->user_id !== $userId){
+            throw new Error('Permission denied to delete this address');
+        }
+
+        $deleted = $this->addressRepository->deleteAddress($addressId);
+
+        return response()->json([
+            'message' => 'Deleted successfully'
+        ]);
+
+    }
+
 }
