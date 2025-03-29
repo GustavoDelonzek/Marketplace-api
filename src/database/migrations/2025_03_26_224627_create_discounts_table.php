@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
             $table->string('description')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->decimal('discount_percentage', 5, 2);
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->softDeletes();

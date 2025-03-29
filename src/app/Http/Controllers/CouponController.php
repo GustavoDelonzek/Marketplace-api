@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCouponRequest;
+use App\Http\Requests\UpdateCouponRequest;
 use App\Http\Services\CouponService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,24 +38,33 @@ class CouponController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $coupon)
     {
-        //
+        return $this->couponService->showCoupon($coupon);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCouponRequest $request, string $coupon)
     {
-        //
+        $validated = $request->validated();
+
+        $updated = $this->couponService->updateCoupon(Auth::user(), $coupon, $validated);
+
+        return response()->json([
+            'message' => 'Coupon updated successfully'
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $coupon)
     {
-        //
+        $deleted = $this->couponService->deleteCoupon(Auth::user(), $coupon);
+        return response()->json([
+            'message' => 'deleted successfully'
+        ], 200);
     }
 }
