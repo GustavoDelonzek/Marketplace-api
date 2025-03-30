@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\UpdateStockProductRequest;
 use App\Http\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,16 +47,37 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateProductRequest $request, string $product)
     {
-        //
+        $validated = $request->validated();
+
+        $updated = $this->productService->updateProduct(Auth::user(), $product, $validated);
+
+        return response()->json([
+            'message' => 'updated successfully'
+        ], 200);
+    }
+
+    public function updateStock(UpdateStockProductRequest $request, string $product)
+    {
+        $validated = $request->validated();
+
+        $updated = $this->productService->updateStock(Auth::user(), $product, $validated);
+
+        return response()->json([
+            'message' => 'Stock updated successfully'
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $product)
     {
-        //
+        $deleted = $this->productService->deleteProduct(Auth::user(), $product);
+
+        return response()->json([
+            'message' => 'deleted successfully'
+        ], 200);
     }
 }

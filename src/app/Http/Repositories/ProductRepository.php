@@ -21,7 +21,7 @@ class ProductRepository{
         return Product::findOrFail($productId)->load('category', 'discounts');
     }
 
-    public function deletedProduct($productId){
+    public function deleteProduct($productId){
         return Product::where('id', $productId)->delete();
     }
 }

@@ -35,11 +35,45 @@ class ProductService{
         return $this->productRepository->showProduct($productId);
     }
 
-    public function updateProduct(){
-        //
+    public function updateProduct(User $user, $productId, $productData){
+        if($user->role !== 'admin' && $user->role !== 'moderator'){
+            throw new HttpResponseException(response()->json([
+                'message' => 'Permission denied for this action'
+            ], 401));
+        }
+
+        if(empty($productData)){
+            throw new HttpResponseException(response()->json([
+                'message' => 'Nothing to update!'
+            ], 400));
+        }
+
+        return $this->productRepository->updateProduct($productId, $productData);
     }
 
-    public function deleteProduct(){
-        //
+    public function updateStock(User $user, $productId, $productData){
+        if($user->role !== 'admin'){
+            throw new HttpResponseException(response()->json([
+                'message' => 'Permission denied for this action'
+            ], 401));
+        }
+
+        if(empty($productData)){
+            throw new HttpResponseException(response()->json([
+                'message' => 'Nothing to update!'
+            ], 400));
+        }
+
+        return $this->productRepository->updateProduct($productId, $productData);
+    }
+
+    public function deleteProduct(User $user, $productId){
+        if($user->role !== 'admin'){
+            throw new HttpResponseException(response()->json([
+                'message' => 'Permission denied for this action'
+            ], 401));
+        }
+
+        return $this->productRepository->deleteProduct($productId);
     }
 }
