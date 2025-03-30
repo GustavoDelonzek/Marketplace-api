@@ -16,6 +16,10 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
     ];
+    
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function user(): BelongsTo
     {

@@ -20,6 +20,10 @@ class Discount extends Model
         'discount_percentage',
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function products():BelongsTo
     {
         return $this->BelongsTo(Product::class);

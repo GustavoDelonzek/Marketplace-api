@@ -18,10 +18,14 @@ class Coupon extends Model
         'discount_percentage'
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function orders():BelongsToMany
     {
         return $this->belongsToMany(Order::class);
     }
 
-    
+
 }

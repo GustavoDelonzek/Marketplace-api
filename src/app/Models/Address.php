@@ -22,6 +22,10 @@ class Address extends Model
         'country',
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);

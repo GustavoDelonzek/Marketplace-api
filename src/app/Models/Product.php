@@ -21,12 +21,16 @@ class Product extends Model
         'price'
     ];
 
-    public function categories(): BelongsTo
+    protected $hidden = [
+        'deleted_at',
+    ];
+
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function discount(): HasMany
+    public function discounts(): HasMany
     {
         return $this->hasMany(Discount::class);
     }

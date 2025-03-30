@@ -5,6 +5,8 @@ namespace App\Http\Services;
 use App\Http\Repositories\CouponRepository;
 use App\Models\User;
 use Error;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CouponService{
     public function __construct(protected CouponRepository $couponRepository)
@@ -39,12 +41,20 @@ class CouponService{
         $end_date = $couponData['end_date'] ?? null;
 
         if(!$start_date && $end_date && $end_date <= $couponDatabase->start_date){
-            throw new Error('End date must be previous than start date');
+            throw new HttpResponseException(
+                response()->json([
+                    'message'=>'End date must be previous than start date'
+                ], 400)
+            );
         }
 
 
         if(empty($couponData)){
-            throw new Error('Nothing to update!', 204);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Nothing to update!'
+                ], 400)
+            );
         }
 
         return $this->couponRepository->updateCoupon($couponId, $couponData);

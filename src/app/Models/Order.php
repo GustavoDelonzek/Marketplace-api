@@ -21,6 +21,15 @@ class Order extends Model
         'total_amount',
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
