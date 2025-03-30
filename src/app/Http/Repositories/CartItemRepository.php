@@ -19,4 +19,14 @@ class CartItemRepository{
             'quantity' => $cartItemData['quantity']
         ]);
     }
+
+    public function deleteCartItem($cartId, $productId){
+        return CartItem::where('cart_id', $cartId)->where('product_id', $productId)->delete();
+    }
+
+    public function clearCart($cartId){
+        return CartItem::where('cart_id', $cartId)->delete();
+    }
+
+
 }

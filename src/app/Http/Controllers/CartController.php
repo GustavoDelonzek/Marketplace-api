@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteCartItemRequest;
 use App\Http\Requests\StoreCartItemRequest;
 use App\Http\Requests\UpdateQuantityCartItemRequest;
 use App\Http\Services\CartService;
@@ -48,7 +49,7 @@ class CartController extends Controller
     {
         $validated = $request->validated();
         $updated = $this->cartService->updateCartItem(Auth::user(), $validated);
-        
+
         return response()->json([
             'message' => 'Cart item updated successfully'
         ], 200);
@@ -57,8 +58,23 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function deleteItem(DeleteCartItemRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $deleted = $this->cartService->deleteCartItem(Auth::user(), $validated['product_id']);
+
+        return response()->json([
+            'message' => 'Cart item deleted successfully'
+        ], 200);
+    }
+
+    public function clear()
+    {
+        $cleared = $this->cartService->clearCart(Auth::user());
+
+        return response()->json([
+            'message' => 'Cart cleared successfully'
+        ], 200);
     }
 }

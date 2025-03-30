@@ -71,4 +71,20 @@ class CartService{
 
         return $this->cartItemRepository->updateQuantityCartItem($cart, $cartItemData);
     }
+
+    public function deleteCartItem(User $user, $productId){
+        if(!$this->cartItemRepository->productAlreadyInCart($user->cart->id, $productId)){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Product not in your cart'
+                ], 400)
+            );
+        }
+
+        return $this->cartItemRepository->deleteCartItem($user->cart->id, $productId);
+    }
+
+    public function clearCart(User $user){
+        return $this->cartItemRepository->clearCart($user->cart->id);
+    }
 }
