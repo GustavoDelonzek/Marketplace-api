@@ -38,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('discounts', DiscountController::class)->except(['index', 'show']);
     Route::apiResource('coupons', CouponController::class)->except(['index', 'show']);
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-    Route::get('products/category/{category}', [ProductController::class, 'indexByCategory']);
     Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
 });
 
@@ -53,3 +52,4 @@ Route::get('coupons/{coupon}', [CouponController::class, 'show']);
 
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/{product}', [ProductController::class, 'show']);
+Route::get('products/category/{category}', [ProductController::class, 'indexByCategory']);

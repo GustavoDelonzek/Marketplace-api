@@ -9,6 +9,10 @@ class ProductRepository{
         return Product::with('category', 'discounts')->get();
     }
 
+    public function getAllProductsByCategory($categoryId){
+        return Product::with('category', 'discounts')->where('category_id', $categoryId)->get();
+    }
+
     public function createProduct($productData){
         return Product::create($productData);
     }

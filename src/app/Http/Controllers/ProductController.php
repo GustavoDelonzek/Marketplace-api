@@ -44,6 +44,11 @@ class ProductController extends Controller
         return response()->json($this->productService->showProduct($product));
     }
 
+    public function indexByCategory(string $category)
+    {
+        return response()->json($this->productService->getAllProductsByCategory($category));
+    }
+
     /**
      * Update the specified resource in storage.
      */

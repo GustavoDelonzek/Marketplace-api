@@ -76,4 +76,8 @@ class ProductService{
 
         return $this->productRepository->deleteProduct($productId);
     }
+
+    public function getAllProductsByCategory($categoryId){
+        return $this->productRepository->getAllProductsByCategory($categoryId);
+    }
 }
