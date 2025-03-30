@@ -2,7 +2,10 @@
 
 namespace App\Http\Repositories;
 
+use App\Models\Cart;
 use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository{
 
@@ -11,7 +14,18 @@ class UserRepository{
     }
 
     public function createUser($user){
-        return User::create($user);
+        DB::beginTransaction();
+        try{
+            $createdUser = User::create($user);
+            $cart = Cart::create([
+                'user_id' => $createdUser->id
+            ]);
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+        return $createdUser;
     }
 
     public function getUserByEmail($email){

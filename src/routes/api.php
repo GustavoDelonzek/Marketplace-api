@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DiscountController;
@@ -39,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('coupons', CouponController::class)->except(['index', 'show']);
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
     Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
+    Route::get('cart', [CartController::class, 'index']);
+    Route::get('cart/items', [CartController::class, 'show']);
+    Route::post('cart/items', [CartController::class, 'store']);
 });
 
 Route::get('categories', [CategoryController::class, 'index']);

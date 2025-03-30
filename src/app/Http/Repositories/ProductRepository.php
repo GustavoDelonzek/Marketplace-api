@@ -28,4 +28,22 @@ class ProductRepository{
     public function deleteProduct($productId){
         return Product::where('id', $productId)->delete();
     }
+
+    public function getStockProduct($productId){
+        return Product::findOrFail($productId)->stock;
+    }
+
+    public function getPriceProduct($productId){
+        $product = Product::findOrFail($productId);
+        if($product->discounts){
+            $totalDiscount = $product->discounts->sum('discount_percentage');
+
+            if($totalDiscount >= 60){
+                $totalDiscount = 60;
+            }
+
+            return $product->price - ($product->price * $totalDiscount / 100);
+        }
+        return $product->price;
+    }
 }
