@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('cart', [CartController::class, 'index']);
     Route::get('cart/items', [CartController::class, 'show']);
     Route::post('cart/items', [CartController::class, 'store']);
+    Route::put('cart/items', [CartController::class, 'update']);
 });
 
 Route::get('categories', [CategoryController::class, 'index']);

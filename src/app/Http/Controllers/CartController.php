@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCartItemRequest;
+use App\Http\Requests\UpdateQuantityCartItemRequest;
 use App\Http\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,9 +44,14 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateQuantityCartItemRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $updated = $this->cartService->updateCartItem(Auth::user(), $validated);
+        
+        return response()->json([
+            'message' => 'Cart item updated successfully'
+        ], 200);
     }
 
     /**

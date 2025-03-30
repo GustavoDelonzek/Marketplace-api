@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories;
 
+use App\Models\Cart;
 use App\Models\CartItem;
 
 class CartItemRepository{
@@ -11,5 +12,11 @@ class CartItemRepository{
 
     public function productAlreadyInCart($cartId, $productId){
         return CartItem::where('cart_id', $cartId)->where('product_id', $productId)->exists();
+    }
+
+    public function updateQuantityCartItem($cartId, $cartItemData){
+        return CartItem::where('cart_id', $cartId)->where('product_id', $cartItemData['product_id'])->update([
+            'quantity' => $cartItemData['quantity']
+        ]);
     }
 }
