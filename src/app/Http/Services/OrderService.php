@@ -112,4 +112,18 @@ class OrderService{
             throw $e;
         }
     }
+
+    public function showOrder($userId, $orderId){
+        $order = $this->orderRepository->getOrder($orderId);
+
+        if($order->user_id !== $userId){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Order selected not belongs this user'
+                ])
+            );
+        }
+
+        return $order;
+    }
 }

@@ -20,4 +20,8 @@ class OrderRepository{
             'total_amount' => $totalAmount
         ]);
     }
+
+    public function getOrder($orderId){
+        return Order::findOrFail($orderId);
+    }
 }
