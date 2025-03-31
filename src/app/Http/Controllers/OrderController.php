@@ -59,8 +59,11 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $order)
     {
-        //
+        $canceled = $this->orderService->cancelOrder(Auth::user(), $order);
+        return response()->json([
+            'message' => 'Order canceled successfully'
+        ], 200);
     }
 }

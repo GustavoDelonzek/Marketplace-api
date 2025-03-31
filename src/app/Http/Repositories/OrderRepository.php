@@ -28,4 +28,10 @@ class OrderRepository{
     public function alterStatus($orderId, $orderData){
         return Order::where('id', $orderId)->update($orderData);
     }
+
+    public function cancelOrder($orderId){
+        return Order::where('id', $orderId)->update([
+            'status' => 'canceled'
+        ]);
+    }
 }

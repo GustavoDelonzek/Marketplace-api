@@ -136,7 +136,29 @@ class OrderService{
                 ], 401)
             );
         }
-        
+
         return $this->orderRepository->alterStatus($orderId, $updateData);
+    }
+
+    public function cancelOrder(User $user, $orderId){
+        $order = $this->orderRepository->getOrder($orderId);
+
+        if($order->user_id !== $user->id){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Order selected not belongs this user'
+                ], 401)
+            );
+        }
+
+        if($order->status !== 'processing' && $order->status !== 'pending'){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Order not in pending or processing status, not possible to cancel'
+                ], 401)
+            );
+        }
+            
+        return $this->orderRepository->cancelOrder($orderId);
     }
 }
