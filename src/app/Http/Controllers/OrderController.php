@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,9 +46,14 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateOrderRequest $request, string $order)
     {
-        //
+        $validated = $request->validated();
+        $updated = $this->orderService->updateStatus(Auth::user(), $validated, $order);
+
+        return response()->json([
+            'message' => 'Status updated successfully'
+        ], 200);
     }
 
     /**

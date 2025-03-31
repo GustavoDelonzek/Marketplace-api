@@ -24,4 +24,8 @@ class OrderRepository{
     public function getOrder($orderId){
         return Order::findOrFail($orderId);
     }
+
+    public function alterStatus($orderId, $orderData){
+        return Order::where('id', $orderId)->update($orderData);
+    }
 }

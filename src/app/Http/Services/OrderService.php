@@ -10,6 +10,7 @@ use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\OrderItemRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Models\User;
 use DateTime;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -125,5 +126,17 @@ class OrderService{
         }
 
         return $order;
+    }
+
+    public function updateStatus(User $user, $updateData, $orderId){
+        if($user->role !== 'admin' && $user->role !== 'moderator'){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action'
+                ], 401)
+            );
+        }
+        
+        return $this->orderRepository->alterStatus($orderId, $updateData);
     }
 }
