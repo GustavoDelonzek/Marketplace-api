@@ -10,4 +10,14 @@ class OrderRepository{
     public function getAllOrdersUser($userId){
         return Order::with('orderItems')->where('user_id', $userId)->get();
     }
+
+    public function createOrder($orderData){
+        return Order::create($orderData);
+    }
+
+    public function addTotalAmount($orderId,$totalAmount){
+        return Order::where('id', $orderId)->update([
+            'total_amount' => $totalAmount
+        ]);
+    }
 }

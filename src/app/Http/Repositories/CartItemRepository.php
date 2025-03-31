@@ -20,6 +20,10 @@ class CartItemRepository{
         ]);
     }
 
+    public function getCartItemsByCart($cartId){
+        return CartItem::where('cart_id', $cartId)->get();
+    }
+
     public function deleteCartItem($cartId, $productId){
         return CartItem::where('cart_id', $cartId)->where('product_id', $productId)->delete();
     }

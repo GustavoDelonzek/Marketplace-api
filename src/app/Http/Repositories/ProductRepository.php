@@ -34,16 +34,12 @@ class ProductRepository{
     }
 
     public function getPriceProduct($productId){
-        $product = Product::findOrFail($productId);
-        if($product->discounts){
-            $totalDiscount = $product->discounts->sum('discount_percentage');
+        return Product::findOrFail($productId)->price;
+    }
 
-            if($totalDiscount >= 60){
-                $totalDiscount = 60;
-            }
-
-            return $product->price - ($product->price * $totalDiscount / 100);
-        }
-        return $product->price;
+    public function updateStock($productId, $quantity){
+        return Product::where('id', $productId)->update([
+            'stock' => $quantity
+        ]);
     }
 }

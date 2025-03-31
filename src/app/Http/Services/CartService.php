@@ -4,8 +4,10 @@ namespace App\Http\Services;
 
 use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
+use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Models\Cart;
+use App\Models\Discount;
 use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,8 @@ class CartService{
     public function __construct(
         protected CartRepository $cartRepository,
         protected CartItemRepository $cartItemRepository,
-        protected ProductRepository $productRepository)
+        protected ProductRepository $productRepository,
+        protected DiscountRepository $discountRepository)
     {
     }
 
@@ -44,8 +47,17 @@ class CartService{
         }
 
         $cartItemData['cart_id'] = $user->cart->id;
-        $cartItemData['unit_price'] = $this->productRepository->getPriceProduct($cartItemData['product_id']);
 
+        $discountsPrice = $this->discountRepository->getDiscountsProduct($cartItemData['product_id']);
+        $totalDiscount = $discountsPrice->sum('discount_percentage') ?? 0;
+        
+        if($totalDiscount >= 60){
+            $totalDiscount = 60;
+        }
+
+        $normalPrice = $this->productRepository->getPriceProduct($cartItemData['product_id']);
+
+        $cartItemData['unit_price'] = $normalPrice - ($normalPrice * $totalDiscount / 100);
 
         return $this->cartItemRepository->createItemCart($cartItemData);
     }
@@ -67,9 +79,7 @@ class CartService{
             );
         }
 
-        $cart = $user->cart->id;
-
-        return $this->cartItemRepository->updateQuantityCartItem($cart, $cartItemData);
+        return $this->cartItemRepository->updateQuantityCartItem($user->cart->id, $cartItemData);
     }
 
     public function deleteCartItem(User $user, $productId){

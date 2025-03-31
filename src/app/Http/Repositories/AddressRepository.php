@@ -17,6 +17,10 @@ class AddressRepository{
         return Address::findOrFail($addressId);
     }
 
+    public function addressIsFromUser($addressId, $userId){
+        return Address::where('id', $addressId)->where('user_id', $userId)->exists();
+    }
+
     public function updateAddress($addressId,$addressData){
         return Address::where('id', $addressId)->update($addressData);
     }

@@ -9,6 +9,12 @@ class DiscountRepository{
         return Discount::all();
     }
 
+    public function getDiscountsProduct($productId){
+        return Discount::where('product_id', $productId)
+        ->where('start_date', '<=' , now())
+        ->where('end_date', '>=', now())->get();
+    }
+
     public function createDiscount($discountData){
         return Discount::create($discountData);
     }
@@ -20,6 +26,7 @@ class DiscountRepository{
     public function showDiscount($discountId){
         return Discount::findOrFail($discountId);
     }
+
 
     public function deletediscount($discountId){
         return Discount::where('id', $discountId)->delete();
