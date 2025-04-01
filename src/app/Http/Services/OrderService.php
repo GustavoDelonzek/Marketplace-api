@@ -36,35 +36,38 @@ class OrderService{
         return $this->orderRepository->getAllOrdersUser($userId);
     }
 
-    public function createOrder($user, $orderData){
-
-
-        if(!$this->addressRepository->addressIsFromUser($orderData['address_id'], $user->id)){
+    public function validateAddress($user, $addressId){
+        if(!$this->addressRepository->addressIsFromUser($addressId, $user->id)){
             throw new HttpResponseException(
                 response()->json([
                     'message' => 'Address not belongs to this user'
                 ], 400)
             );
         }
+    }
+
+    public function validateCart($user){
+        if(count($user->cart->cartItems) == 0){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Your cart is empty!'
+                ], 400)
+            );
+        }
+    }
+
+    public function createOrder($user, $orderData){
+        $this->validateAddress($user, $orderData['address_id']);
+        $this->validateCart($user);
 
         $orderData['user_id'] = $user->id;
         $orderData['order_date'] = now();
         $orderData['status'] = 'pending';
 
         DB::beginTransaction();
-
         try{
             $createdOrder = $this->orderRepository->createOrder($orderData);
-
             $cartItems = $user->cart->cartItems;
-
-            if(count($cartItems) == 0){
-                throw new HttpResponseException(
-                    response()->json([
-                        'message' => 'Your cart is empty!'
-                    ], 400)
-                );
-            }
 
             $totalAmountLocal = 0;
             foreach($cartItems as $cartItem){
@@ -158,7 +161,7 @@ class OrderService{
                 ], 401)
             );
         }
-            
+
         return $this->orderRepository->cancelOrder($orderId);
     }
 }

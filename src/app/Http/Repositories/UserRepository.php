@@ -20,12 +20,13 @@ class UserRepository{
             $cart = Cart::create([
                 'user_id' => $createdUser->id
             ]);
+            DB::commit();
+            return $createdUser;
         }
         catch(Exception $e){
             DB::rollBack();
             throw $e;
         }
-        return $createdUser;
     }
 
     public function getUserByEmail($email){
