@@ -56,6 +56,37 @@ class OrderService{
         }
     }
 
+    public function addDiscount($productId){
+            $discounts = $this->discountRepository->getDiscountsProduct($productId);
+            $totalDiscount = $discounts->sum('discount_percentage') ?? 0;
+
+            if($totalDiscount >= 60){
+                $totalDiscount = 60;
+            }
+
+            $normalPrice = $this->productRepository->getPriceProduct($productId);
+            return $normalPrice - ($normalPrice * $totalDiscount / 100);
+    }
+
+    public function applicateCupon($totalAmountLocal, array $orderData){
+        $couponId = $orderData['coupon_id'] ?? null;
+
+        if(!$couponId){
+            return $totalAmountLocal;
+        }
+
+        $coupon = $this->couponRepository->showCoupon($couponId);
+
+        if(now() < $coupon->start_date || now() > $coupon->end_date){
+            throw new HttpResponseException(
+                response()->json(['message' => 'Cupon date is invalid'], 400)
+            );
+        }
+
+       return $totalAmountLocal = $totalAmountLocal - ($totalAmountLocal * $coupon->discount_percentage / 100);
+
+    }
+
     public function createOrder($user, $orderData){
         $this->validateAddress($user, $orderData['address_id']);
         $this->validateCart($user);
@@ -71,16 +102,7 @@ class OrderService{
 
             $totalAmountLocal = 0;
             foreach($cartItems as $cartItem){
-                $discounts = $this->discountRepository->getDiscountsProduct($cartItem->product_id);
-                $totalDiscount = $discounts->sum('discount_percentage') ?? 0;
-
-                if($totalDiscount >= 60){
-                    $totalDiscount = 60;
-                }
-
-                $normalPrice = $this->productRepository->getPriceProduct($cartItem->product_id);
-
-                $orderItem['unit_price'] = $normalPrice - ($normalPrice * $totalDiscount / 100);
+                $orderItem['unit_price'] = $this->addDiscount($cartItem->product_id);
                 $orderItem['product_id'] = $cartItem->product_id;
                 $orderItem['quantity'] = $cartItem->quantity;
                 $orderItem['order_id'] = $createdOrder->id;
@@ -94,18 +116,7 @@ class OrderService{
                 $this->productRepository->updateStock($cartItem->product_id, $restStock);
             }
 
-            $couponId = $orderData['coupon_id'] ?? null;
-
-            if($couponId){
-                $coupon = $this->couponRepository->showCoupon($couponId);
-                if(now() < $coupon->start_date || now() > $coupon->end_date){
-                    throw new HttpResponseException(
-                        response()->json(['message' => 'Cupon is invalid'], 400)
-                    );
-                }
-                $totalAmountLocal = $totalAmountLocal - ($totalAmountLocal * $coupon->discount_percentage / 100);
-             }
-
+            $totalAmountLocal = $this->applicateCupon($totalAmountLocal, $orderData);
             $this->orderRepository->addTotalAmount($createdOrder->id, $totalAmountLocal);
             $this->cartItemRepository->clearCart($user->cart->id);
 
