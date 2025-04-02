@@ -3,19 +3,20 @@
 namespace App\Notifications;
 
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OrderStatusNotification extends Notification implements ShouldQueue
+class OrderCreatedNotification extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public string $status, public Order $order)
+    public function __construct(public User $user, public Order $order)
     {
         //
     }
@@ -36,10 +37,11 @@ class OrderStatusNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-        ->greeting("Olá {$this->order->user->name}")
-        ->subject("Status do seu pedido atualizado")
-        ->action('Ver Pedido', '#')
-        ->line("O status do seu pedido #{$this->order->id} foi atualizado para {$this->status}.");
+                    ->subject('Seu pedido foi criado com sucesso!')
+                    ->greeting("Olá {$this->user->name}")
+                    ->line("O pedido #{$this->order->id} foi criado com sucesso!")
+                    ->action('Ver Pedido', '#')
+                    ->line('Obrigado por ter comprado com nosso site!');
     }
 
     /**
@@ -50,8 +52,7 @@ class OrderStatusNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'status' => $this->status,
-            'order_id' => $this->order->id,
+            //
         ];
     }
 }

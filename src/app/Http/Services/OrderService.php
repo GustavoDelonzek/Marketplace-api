@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\OrderCreated;
 use App\Events\OrderStatusUpdated;
 use App\Http\Repositories\AddressRepository;
 use App\Http\Repositories\CartItemRepository;
@@ -122,7 +123,7 @@ class OrderService{
             $this->cartItemRepository->clearCart($user->cart->id);
 
             DB::commit();
-            OrderStatusUpdated::dispatch($user, 'pending', $createdOrder);
+            OrderCreated::dispatch($user, $createdOrder);
             return $createdOrder;
         } catch(Exception $e){
             DB::rollBack();
@@ -178,6 +179,8 @@ class OrderService{
             );
         }
 
-        return $this->orderRepository->cancelOrder($orderId);
+        $canceled = $this->orderRepository->cancelOrder($orderId);
+        OrderStatusUpdated::dispatch($user, 'canceled', $this->orderRepository->getOrder($orderId));
+        return $canceled;
     }
 }
