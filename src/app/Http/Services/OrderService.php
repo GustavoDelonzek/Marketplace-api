@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\OrderStatusUpdated;
 use App\Http\Repositories\AddressRepository;
 use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
@@ -10,6 +11,7 @@ use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\OrderItemRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Models\Order;
 use App\Models\User;
 use DateTime;
 use Exception;
@@ -108,7 +110,6 @@ class OrderService{
                 $orderItem['order_id'] = $createdOrder->id;
 
                 $this->orderItemRepository->createOrderItem($orderItem);
-
                 $totalAmountLocal += $orderItem['unit_price'] * $cartItem->quantity;
 
                 $restStock = $this->productRepository->getStockProduct($cartItem->product_id) - $cartItem->quantity;
@@ -121,6 +122,7 @@ class OrderService{
             $this->cartItemRepository->clearCart($user->cart->id);
 
             DB::commit();
+            OrderStatusUpdated::dispatch($user, 'pending', $createdOrder);
             return $createdOrder;
         } catch(Exception $e){
             DB::rollBack();
@@ -151,7 +153,10 @@ class OrderService{
             );
         }
 
-        return $this->orderRepository->alterStatus($orderId, $updateData);
+
+        $updated =$this->orderRepository->alterStatus($orderId, $updateData);
+        OrderStatusUpdated::dispatch($user, $updateData['status'], $this->orderRepository->getOrder($orderId));
+        return $updated;
     }
 
     public function cancelOrder(User $user, $orderId){
