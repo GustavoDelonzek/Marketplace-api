@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateImageRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Services\UserService;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -63,4 +65,22 @@ class UserController extends Controller
             'message' => 'Deleted successfully'
         ], 204);
     }
+
+    public function updateImage(UpdateImageRequest $request)
+    {
+        $validated = $request->validated();
+
+        $updated = $this->userService->updateImage(Auth::user(), $validated['image_user']);
+
+        return response()->json([
+            'message' => 'Image updated successfully'
+        ],200);
+
+    }
+
+    public function showImage()
+    {
+        return $this->userService->showImage(Auth::user());
+    }
+
 }

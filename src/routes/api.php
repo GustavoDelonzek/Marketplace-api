@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('users/me', [UserController::class, 'updateMe']);
     Route::delete('users/me', [UserController::class, 'deleteMe']);
     Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
+    Route::put('users/image', [UserController::class, 'updateImage']);
+    Route::get('users/show-image', [UserController::class, 'showImage']);
 
     Route::apiResource('address', AddressController::class);
 

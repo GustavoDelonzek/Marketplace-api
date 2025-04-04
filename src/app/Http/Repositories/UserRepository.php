@@ -41,4 +41,10 @@ class UserRepository{
         return $user->delete();
     }
 
+    public function updateImage(User $user, $image){
+        return $user->update([
+            'image_path' => $image
+        ]);
+    }
+
 }

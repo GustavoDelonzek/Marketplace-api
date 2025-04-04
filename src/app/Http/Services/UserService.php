@@ -5,7 +5,10 @@ namespace App\Http\Services;
 use App\Http\Repositories\UserRepository;
 use App\Models\User;
 use Error;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserService{
     public function __construct(protected UserRepository $userRepository)
@@ -47,5 +50,36 @@ class UserService{
         $newUser['role'] = 'moderator';
 
         return $this->userRepository->createUser($newUser);
+    }
+
+    public function updateImage(User $user, $image){
+        $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+        
+        if($user->image_path){
+            Storage::delete($user->image_path);
+        }
+
+        $path = Storage::putFileAs('public/profiles', $image, $imageName);
+
+        return $this->userRepository->updateImage($user, $path);
+    }
+
+    public function showImage(User $user)
+    {
+        if (!Storage::exists($user->image_path)) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Image not found',
+                ], 404)
+            );
+        }
+
+        $file = Storage::get($user->image_path);
+        $mime = Storage::mimeType($user->image_path);
+
+        return response()->make($file, 200, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline',
+        ]);
     }
 }
