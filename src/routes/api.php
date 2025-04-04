@@ -51,6 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
     Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
+    Route::put('products/image/{product}', [ProductController::class, 'updateImage']);
+    Route::get('products/image/{product}', [ProductController::class, 'showImage']);
 
     Route::get('cart', [CartController::class, 'index']);
     Route::get('cart/items', [CartController::class, 'show']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateImageRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Requests\UpdateStockProductRequest;
 use App\Http\Services\ProductService;
@@ -84,5 +85,20 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'deleted successfully'
         ], 200);
+    }
+
+    public function updateImage(string $product, UpdateImageRequest $request){
+            $validated = $request->validated();
+
+            $updated = $this->productService->updateImage($product, $validated['image']);
+
+            return response()->json([
+                'message' => 'Image updated successfully'
+            ],200);
+    }
+
+    public function showImage(string $product)
+    {
+        return $this->productService->showImage($product);
     }
 }
