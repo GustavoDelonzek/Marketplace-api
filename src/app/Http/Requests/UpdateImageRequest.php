@@ -22,7 +22,7 @@ class UpdateImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image_user' => 'required|file|mimes:jpeg,png,jpg,svg|max:1024',
+            'image' => 'required|file|mimes:jpeg,png,jpg,svg|max:2048'
         ];
     }
 }

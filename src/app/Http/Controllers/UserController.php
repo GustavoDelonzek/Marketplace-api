@@ -70,7 +70,7 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $updated = $this->userService->updateImage(Auth::user(), $validated['image_user']);
+        $updated = $this->userService->updateImage(Auth::user(), $validated['image']);
 
         return response()->json([
             'message' => 'Image updated successfully'

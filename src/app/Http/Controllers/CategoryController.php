@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Requests\UpdateImageRequest;
 use App\Http\Services\CategoryService;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
@@ -72,4 +73,22 @@ class CategoryController extends Controller
             'message' => 'Category deleted successfully'
         ], 204);
     }
+
+    public function updateImage(string $category, UpdateImageRequest $request)
+    {
+        $validated = $request->validated();
+
+        $updated = $this->categoryService->updateImage($category, $validated['image']);
+
+        return response()->json([
+            'message' => 'Image updated successfully'
+        ],200);
+
+    }
+
+    public function showImage(string $category)
+    {
+        return $this->categoryService->showImage($category);
+    }
+
 }

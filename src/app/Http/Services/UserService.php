@@ -54,12 +54,12 @@ class UserService{
 
     public function updateImage(User $user, $image){
         $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-        
+
         if($user->image_path){
             Storage::delete($user->image_path);
         }
 
-        $path = Storage::putFileAs('public/profiles', $image, $imageName);
+        $path = Storage::putFileAs('public/categories', $image, $imageName);
 
         return $this->userRepository->updateImage($user, $path);
     }

@@ -37,11 +37,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('users/me', [UserController::class, 'deleteMe']);
     Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
     Route::put('users/image', [UserController::class, 'updateImage']);
-    Route::get('users/show-image', [UserController::class, 'showImage']);
+    Route::get('users/image', [UserController::class, 'showImage']);
 
     Route::apiResource('address', AddressController::class);
 
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+    Route::put('categories/image/{category}', [CategoryController::class, 'updateImage']);
+    Route::get('categories/image/{category}', [CategoryController::class, 'showImage']);
 
     Route::apiResource('discounts', DiscountController::class)->except(['index', 'show']);
 
