@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\UserRepository;
+use App\Jobs\SendEmailWelcome;
 use App\Models\User;
 use Error;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -32,7 +33,9 @@ class UserService{
 
     public function register($user){
         $user['password'] = Hash::make($user['password']);
-        return $this->userRepository->createUser($user);
+        $newUser = $this->userRepository->createUser($user);
+        SendEmailWelcome::dispatch($newUser);
+        return $newUser;
     }
 
     public function updateMe(User $user, $userUpdates){

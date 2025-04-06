@@ -24,7 +24,7 @@ class UpdateDiscountRequest extends FormRequest
         return [
             'description' => 'sometimes|string|max:280',
             'discount_percentage' => 'sometimes|numeric',
-            'start_date' => 'sometimes|date',
+            'start_date' => 'sometimes|date|after:now',
             'end_date' => 'sometimes|date|after:start_date',
             'product_id' => 'sometimes|exists:products,id',
         ];
