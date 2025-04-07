@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:coupons-expired')->dailyAt('00:00');
+        $schedule->command('app:discounts-expired')->dailyAt('00:00');
     }
 
     /**
