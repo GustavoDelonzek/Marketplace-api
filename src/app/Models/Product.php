@@ -35,14 +35,14 @@ class Product extends Model
         return $this->hasMany(Discount::class);
     }
 
-    public function cartItems():BelongsToMany
+    public function cartItems():HasMany
     {
-        return $this->belongsToMany(CartItem::class);
+        return $this->HasMany(CartItem::class);
     }
 
-    public function orderItems(): BelongsToMany
+    public function orderItems(): HasMany
     {
-        return $this->belongsToMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class);
     }
 
 }

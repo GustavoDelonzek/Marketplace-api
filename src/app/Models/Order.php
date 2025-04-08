@@ -36,9 +36,9 @@ class Order extends Model
         return $this->belongsTo(Address::class);
     }
 
-    public function coupon(): HasOne
+    public function coupon(): BelongsTo
     {
-        return $this->hasOne(Coupon::class);
+        return $this->belongsTo(Coupon::class);
     }
 
     public function orderItems(): HasMany

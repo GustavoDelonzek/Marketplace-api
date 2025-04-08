@@ -18,9 +18,9 @@ class OrderItem extends Model
         'unit_price',
     ];
 
-    public function product():HasOne
+    public function product():BelongsTo
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function order(): BelongsTo
