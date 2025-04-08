@@ -12,6 +12,9 @@ use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\OrderItemRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Jobs\SendEmailOrderCreated;
+use App\Jobs\SendEmailStatusOrder;
+use App\Listeners\SendOrderStatusUpdated;
 use App\Models\Order;
 use App\Models\User;
 use DateTime;
@@ -123,7 +126,7 @@ class OrderService{
             $this->cartItemRepository->clearCart($user->cart->id);
 
             DB::commit();
-            OrderCreated::dispatch($user, $createdOrder);
+            SendEmailOrderCreated::dispatch($user, $createdOrder);
             return $createdOrder;
         } catch(Exception $e){
             DB::rollBack();
@@ -156,7 +159,8 @@ class OrderService{
 
 
         $updated =$this->orderRepository->alterStatus($orderId, $updateData);
-        OrderStatusUpdated::dispatch($user, $updateData['status'], $this->orderRepository->getOrder($orderId));
+        $order = $this->orderRepository->getOrder($orderId);
+        SendEmailStatusOrder::dispatch($order->user, $order);
         return $updated;
     }
 
@@ -180,7 +184,8 @@ class OrderService{
         }
 
         $canceled = $this->orderRepository->cancelOrder($orderId);
-        OrderStatusUpdated::dispatch($user, 'canceled', $this->orderRepository->getOrder($orderId));
+        $order = $this->orderRepository->getOrder($orderId);
+        SendEmailStatusOrder::dispatch($order->user, $order);
         return $canceled;
     }
 }
