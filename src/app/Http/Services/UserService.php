@@ -20,7 +20,10 @@ class UserService{
         $loginUser = $this->userRepository->getUserByEmail($user['email']);
 
         if(!$user || !Hash::check($user['password'], $loginUser->password)){
-            throw new Error('Invalid credentials', 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Invalid credentials',
+                ], 401));
         }
 
         $token = $loginUser->createToken('api-token')->plainTextToken;
@@ -48,7 +51,10 @@ class UserService{
 
     public function createModerator(User $user, $newUser){
         if($user->role !== 'admin'){
-            throw new Error('No permission to create a Moderator', 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'No permission to create a Moderator',
+                ], 401));
         }
         $newUser['role'] = 'moderator';
 

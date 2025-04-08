@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Repositories\AddressRepository;
 use Error;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AddressService{
     public function __construct(protected AddressRepository $addressRepository)
@@ -24,7 +25,10 @@ class AddressService{
         $address = $this->addressRepository->getAddressById($addressId);
 
         if($address->user_id !== $userLogado){
-            throw new Error("Permission denied to access this address ", 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied to access this address',
+                ], 401));
         }
 
         return $address;
@@ -34,7 +38,10 @@ class AddressService{
         $address = $this->addressRepository->getAddressById($addressId);
 
         if($address->user_id !== $userId){
-            throw new Error('Permission denied to update this address');
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied to update this address',
+                ], 401));
         }
         $updated = $this->addressRepository->updateAddress($addressId, $addressData);
 
@@ -47,7 +54,10 @@ class AddressService{
         $address = $this->addressRepository->getAddressById($addressId);
 
         if($address->user_id !== $userId){
-            throw new Error('Permission denied to delete this address');
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied to delete this address',
+                ],  401));
         }
 
         $deleted = $this->addressRepository->deleteAddress($addressId);

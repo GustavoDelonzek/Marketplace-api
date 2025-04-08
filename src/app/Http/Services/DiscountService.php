@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Repositories\DiscountRepository;
 use App\Models\User;
 use Error;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class DiscountService{
     public function __construct(protected DiscountRepository $discountRepository)
@@ -18,7 +19,10 @@ class DiscountService{
 
     public function createDiscount(User $user, $discountData){
         if($user->role !== 'admin'){
-            throw new Error('Permission denied for this action', 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
         }
 
         return $this->discountRepository->createDiscount($discountData);
@@ -30,8 +34,12 @@ class DiscountService{
 
     public function updateDiscount(User $user,int $discountId, $discountData){
         if($user->role !== 'admin'){
-            throw new Error('Permission denied for this action', 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
         }
+
         $discountDatabase = $this->discountRepository->showDiscount($discountId);
 
 
@@ -39,12 +47,18 @@ class DiscountService{
         $end_date = $discountData['end_date'] ?? null;
 
         if(!$start_date && $end_date && $end_date <= $discountDatabase->start_date){
-            throw new Error('End date must be previous than start_date');
+            throw new HttpResponseException(
+                response()->json([
+                    'message'=>'End date must be previous than start date'
+                ], 400));
         }
 
 
         if(empty($discountData)){
-            throw new Error('Nothing to update!', 204);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Nothing to update!'
+                ], 400));
         }
 
         return $this->discountRepository->updateDiscount($discountId, $discountData);
@@ -53,11 +67,11 @@ class DiscountService{
 
     public function deleteDiscount(User $user, int $discountId){
         if($user->role !== 'admin'){
-            throw new Error('Permission denied for this action', 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
         }
         return $this->discountRepository->deleteDiscount($discountId);
     }
-
-
-
 }

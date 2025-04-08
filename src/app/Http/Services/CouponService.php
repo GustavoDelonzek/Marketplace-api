@@ -19,7 +19,10 @@ class CouponService{
 
     public function createCoupon(User $user,array $couponData){
         if($user->role !== 'admin'){
-            throw new Error('Permission denied for this action');
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
         }
 
         return $this->couponRepository->createCoupon($couponData);
@@ -62,7 +65,10 @@ class CouponService{
 
     public function deleteCoupon(User $user, $couponId){
         if($user->role !== 'admin'){
-            throw new Error('Permission denied for this action', 401);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
         }
 
         return $this->couponRepository->deleteCoupon($couponId);
