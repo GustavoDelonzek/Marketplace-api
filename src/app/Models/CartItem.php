@@ -23,8 +23,8 @@ class CartItem extends Model
         return $this->belongsTo(Cart::class);
     }
 
-    public function product(): HasOne
+    public function product(): BelongsTo
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
     }
 }
