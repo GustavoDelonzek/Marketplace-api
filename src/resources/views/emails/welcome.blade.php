@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Bem-vindo ao Marketplace</title>
+    <title>Welcome to our Marketplace</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,17 +38,17 @@
 </head>
 <body>
     <div class="welcome-header">
-        <h2 style="margin:0;">Bem-vindo ao Marketplace</h2>
+        <h2 style="margin:0;">Welcome to our Marketplace</h2>
     </div>
 
     <div class="message">
-        <p>Olá {{ $user->name }},</p>
-        <p>Obrigado por se registrar em nossa plataforma!</p>
-        <p>Estamos felizes em tê-lo conosco.</p>
+        <p>Hello {{ $user->name }},</p>
+        <p>Thank you for registering with us. </p>
+        <p>We are excited to have you on board.</p>
     </div>
 
     <div class="footer">
-        <p>Equipe Marketplace</p>
+        <p>Marketplace Team</p>
     </div>
 </body>
 </html>

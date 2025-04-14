@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\UserRepository;
+use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendEmailWelcome;
 use App\Models\User;
 use Error;
@@ -12,6 +13,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UserService{
+    use CanLoadRelationships;
+
+    private array $relations = ['addresses', 'orders', 'cart', 'cart.cartItems', 'cart.cartItems.product' , 'orders.orderItems', 'orders.orderItems.product'];
+
     public function __construct(protected UserRepository $userRepository)
     {
     }
@@ -39,6 +44,12 @@ class UserService{
         $newUser = $this->userRepository->createUser($user);
         SendEmailWelcome::dispatch($newUser);
         return $newUser;
+    }
+
+    public function showMe($user){
+        $query = $this->loadRelationships($user);
+
+        return $query;
     }
 
     public function updateMe(User $user, $userUpdates){

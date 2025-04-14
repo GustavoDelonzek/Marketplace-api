@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function showMe()
     {
-        return Auth::user();
+        return $this->userService->showMe(Auth::user());
     }
 
     /**

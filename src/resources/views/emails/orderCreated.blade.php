@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedido Criado - Marktplace </title>
+    <title>Order Created - Marketplace </title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -79,19 +79,19 @@
             <div class="divider"></div>
 
             <div class="title-center">
-                <h2>Obrigado por sua compra!</h2>
-                <p>Seu pedido #{{ $order->id }} foi recebido com sucesso.</p>
+                <h2>Thank you for your purchase!</h2>
+                <p>Your ordered #{{ $order->id }} was received successfully.</p>
             </div>
 
             <div class="divider"></div>
 
-            <h3>Detalhes do Pedido:</h3>
+            <h3>Details of Order:</h3>
             <table class="order-items">
                 <thead>
                     <tr>
-                        <th>Produto</th>
-                        <th>Quantidade</th>
-                        <th>Preço Unitário</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price Unit</th>
                         <th>Subtotal</th>
                     </tr>
                 </thead>
@@ -108,15 +108,15 @@
             </table>
 
             <div class="order-total">
-                Total do Pedido: R$ {{ number_format($order->total_amount, 2, ',', '.') }}
+                Total of Order: R$ {{ number_format($order->total_amount, 2, ',', '.') }}
             </div>
 
-            <p>Você receberá um e-mail quando seu pedido for enviado.</a>.</p>
+            <p>You will receive an e-mail when your order is sent.</a>.</p>
         </div>
 
         <div class="footer">
-            <p>Atenciosamente,<br>Equipe Marketplace</p>
-            <p>© {{ date('Y') }} Marketplace. Todos os direitos reservados.</p>
+            <p>At your service,<br>Marketplace Team</p>
+            <p>© {{ date('Y') }} Marketplace. All rights reserved.</p>
         </div>
     </div>
 </body>
