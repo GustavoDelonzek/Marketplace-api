@@ -7,7 +7,7 @@ use App\Models\Category;
 class CategoryRepository{
 
     public function getAllCategories(){
-        return Category::all();
+        return Category::query();
     }
 
     public function createCategory($categoryData){

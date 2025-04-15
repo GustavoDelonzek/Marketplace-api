@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\CategoryRepository;
+use App\Http\Traits\CanLoadRelationships;
 use App\Models\User;
 use Error;
 use Exception;
@@ -11,13 +12,19 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoryService{
+    use CanLoadRelationships;
+    private array $relations = ['products'];
 
     public function __construct(protected CategoryRepository $categoryRepository)
     {
     }
 
     public function getAllCategories(){
-        return $this->categoryRepository->getAllCategories();
+        $query = $this->categoryRepository->getAllCategories();
+
+        $categories = $this->loadRelationships($query)->get();
+
+        return $categories;
     }
 
     public function createCategory(User $user, $categoryData){
@@ -32,7 +39,9 @@ class CategoryService{
     }
 
     public function showCategory($categoryId){
-        return $this->categoryRepository->showCategory($categoryId);
+        $categoryQuery = $this->categoryRepository->showCategory($categoryId);
+        $category = $this->loadRelationships($categoryQuery);
+        return $category;
     }
 
     public function updateCategory($categoryData, $categoryId,User $user){

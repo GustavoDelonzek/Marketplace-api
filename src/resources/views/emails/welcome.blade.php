@@ -13,7 +13,7 @@
             padding: 20px;
         }
         .welcome-header {
-            background-color: #FF4500; /* Cor laranja-vermelho */
+            background-color: #FF4500; 
             color: white;
             padding: 15px;
             text-align: center;
