@@ -6,7 +6,7 @@ use App\Models\Discount;
 
 class DiscountRepository{
     public function getAllDiscounts(){
-        return Discount::all();
+        return Discount::query();
     }
 
     public function getDiscountsProduct($productId){

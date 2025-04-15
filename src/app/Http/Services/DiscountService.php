@@ -3,17 +3,25 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\DiscountRepository;
+use App\Http\Traits\CanLoadRelationships;
 use App\Models\User;
 use Error;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class DiscountService{
+    use CanLoadRelationships;
+    private array $relations = ['product'];
+
     public function __construct(protected DiscountRepository $discountRepository)
     {
     }
 
     public function getAllDiscounts(){
-        return $this->discountRepository->getAllDiscounts();
+        $discountQuery = $this->discountRepository->getAllDiscounts();
+
+        $discount = $this->loadRelationships($discountQuery)->get();
+        
+        return $discount;
     }
 
 
@@ -29,7 +37,11 @@ class DiscountService{
     }
 
     public function showDiscount(int $discountId){
-        return $this->discountRepository->showDiscount($discountId);
+        $discountQuery = $this->discountRepository->showDiscount($discountId);
+
+        $discount = $this->loadRelationships($discountQuery);
+
+        return $discount;
     }
 
     public function updateDiscount(User $user,int $discountId, $discountData){
