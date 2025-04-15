@@ -6,6 +6,7 @@ use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
 use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Http\Traits\CanLoadRelationships;
 use App\Models\Cart;
 use App\Models\Discount;
 use App\Models\User;
@@ -13,6 +14,9 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
 class CartService{
+    use CanLoadRelationships;
+    private array $relations = ['cartItems.product'];
+
     public function __construct(
         protected CartRepository $cartRepository,
         protected CartItemRepository $cartItemRepository,
@@ -26,7 +30,9 @@ class CartService{
     }
 
     public function showCart($userId){
-        return $this->cartRepository->showCart($userId);
+        $cartQuery = $this->cartRepository->showCart($userId);
+        $cart = $this->loadRelationships($cartQuery);
+        return $cart;
     }
 
     public function createCartItem(User $user,$cartItemData){
@@ -50,7 +56,7 @@ class CartService{
 
         $discountsPrice = $this->discountRepository->getDiscountsProduct($cartItemData['product_id']);
         $totalDiscount = $discountsPrice->sum('discount_percentage') ?? 0;
-        
+
         if($totalDiscount >= 60){
             $totalDiscount = 60;
         }

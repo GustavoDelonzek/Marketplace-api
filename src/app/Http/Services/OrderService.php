@@ -2,8 +2,6 @@
 
 namespace App\Http\Services;
 
-use App\Events\OrderCreated;
-use App\Events\OrderStatusUpdated;
 use App\Http\Repositories\AddressRepository;
 use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
@@ -12,17 +10,23 @@ use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\OrderItemRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendEmailOrderCreated;
 use App\Jobs\SendEmailStatusOrder;
-use App\Listeners\SendOrderStatusUpdated;
-use App\Models\Order;
 use App\Models\User;
-use DateTime;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 
 class OrderService{
+    use CanLoadRelationships;
+
+    private array $relations = [
+        'address',
+        'coupon',
+        'orderItems.product',
+    ];
+
     public function __construct(
         protected OrderRepository $orderRepository,
         protected ProductRepository $productRepository,
@@ -32,14 +36,17 @@ class OrderService{
         protected AddressRepository $addressRepository,
         protected CouponRepository $couponRepository,
         protected OrderItemRepository $orderItemRepository
-
         )
     {
 
     }
 
     public function allOrders($userId){
-        return $this->orderRepository->getAllOrdersUser($userId);
+        $queryOrders =$this->orderRepository->getAllOrdersUser($userId);
+
+        $orders = $this->loadRelationships($queryOrders)->get();
+
+        return $orders;
     }
 
     public function validateAddress($user, $addressId){
@@ -85,7 +92,7 @@ class OrderService{
 
         if(now() < $coupon->start_date || now() > $coupon->end_date){
             throw new HttpResponseException(
-                response()->json(['message' => 'Cupon date is invalid'], 400)
+                response()->json(['message' => 'Coupon date is invalid'], 400)
             );
         }
 
@@ -144,6 +151,8 @@ class OrderService{
                 ])
             );
         }
+
+        $order = $this->loadRelationships($order);
 
         return $order;
     }

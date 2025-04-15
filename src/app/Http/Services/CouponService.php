@@ -25,6 +25,13 @@ class CouponService{
                 ], 401));
         }
 
+        if($couponData['discount_percentage'] > 60){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Discount percentage must be less than 60%',
+                ], 400));
+        }
+
         return $this->couponRepository->createCoupon($couponData);
     }
 

@@ -7,6 +7,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Models\User;
 use Error;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Http;
 
 class DiscountService{
     use CanLoadRelationships;
@@ -20,7 +21,7 @@ class DiscountService{
         $discountQuery = $this->discountRepository->getAllDiscounts();
 
         $discount = $this->loadRelationships($discountQuery)->get();
-        
+
         return $discount;
     }
 
@@ -31,6 +32,13 @@ class DiscountService{
                 response()->json([
                     'message' => 'Permission denied for this action',
                 ], 401));
+        }
+
+        if($discountData['discount_percentage'] > 60){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Discount percentage must be less than 60%',
+                ], 400));
         }
 
         return $this->discountRepository->createDiscount($discountData);

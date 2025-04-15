@@ -8,7 +8,7 @@ class OrderRepository{
 
 
     public function getAllOrdersUser($userId){
-        return Order::with('orderItems')->where('user_id', $userId)->get();
+        return Order::with('orderItems')->where('user_id', $userId);
     }
 
     public function createOrder($orderData){
@@ -34,5 +34,5 @@ class OrderRepository{
             'status' => 'canceled'
         ]);
     }
-    
+
 }
