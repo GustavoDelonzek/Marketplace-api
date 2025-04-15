@@ -21,7 +21,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->name,
             'category_id' => $this->faker->randomElement(Category::all()->pluck('id')->toArray()),
             'stock' => $this->faker->numberBetween(1, 100),
-            'price' => $this->faker->numberBetween(1, 1000),
+            'price' => $this->faker->numberBetween(1, 250),
             'image_path' => 'public/products/defaultProduct.png',
         ];
     }
