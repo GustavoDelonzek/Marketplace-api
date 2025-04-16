@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RenewCouponRequest;
 use App\Http\Requests\StoreCouponRequest;
 use App\Http\Requests\UpdateCouponRequest;
 use App\Http\Services\CouponService;
@@ -65,6 +66,21 @@ class CouponController extends Controller
         $deleted = $this->couponService->deleteCoupon(Auth::user(), $coupon);
         return response()->json([
             'message' => 'deleted successfully'
+        ], 200);
+    }
+
+    public function disabledCoupons()
+    {
+        return $this->couponService->getDisabledCoupons(Auth::user());
+    }
+
+    public function renewCoupon(string $coupon, RenewCouponRequest $request){
+        $validated = $request->validated();
+
+        $updated = $this->couponService->renewCoupon(Auth::user(), $coupon, $validated);
+
+        return response()->json([
+            'message' => 'Coupon updated successfully'
         ], 200);
     }
 }

@@ -24,4 +24,15 @@ class CouponRepository{
     public function deleteCoupon($couponId){
         return Coupon::where('id', $couponId)->delete();
     }
+
+    public function getDisabledCoupons(){
+        return Coupon::withTrashed()->where('deleted_at', '<>', null)->get();
+    }
+    public function getCouponDisabled($couponId){
+        return Coupon::withTrashed()->where('id', $couponId)->first();
+    }
+
+    public function renewCoupon($couponId, $couponData){
+        return Coupon::withTrashed()->where('id', $couponId)->update($couponData);
+    }
 }

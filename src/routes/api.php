@@ -37,22 +37,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('users/me', [UserController::class, 'deleteMe']);
     Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
     Route::put('users/image', [UserController::class, 'updateImage']);
-    Route::get('users/image', [UserController::class, 'showImage']);
 
     Route::apiResource('address', AddressController::class);
 
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
     Route::put('categories/image/{category}', [CategoryController::class, 'updateImage']);
-    Route::get('categories/image/{category}', [CategoryController::class, 'showImage']);
 
     Route::apiResource('discounts', DiscountController::class)->except(['index', 'show']);
 
     Route::apiResource('coupons', CouponController::class)->except(['index', 'show']);
+    Route::get('coupons/disabled', [CouponController::class, 'disabledCoupons']);
+    Route::put('coupons/{coupon}/renew', [CouponController::class, 'renewCoupon']);
 
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
     Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
     Route::put('products/image/{product}', [ProductController::class, 'updateImage']);
-    Route::get('products/image/{product}', [ProductController::class, 'showImage']);
 
     Route::get('cart', [CartController::class, 'index']);
     Route::get('cart/items', [CartController::class, 'show']);
@@ -63,6 +62,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('orders', OrderController::class);
 });
+
+Route::get('users/image', [UserController::class, 'showImage']);
+Route::get('categories/image/{category}', [CategoryController::class, 'showImage']);
+Route::get('products/image/{product}', [ProductController::class, 'showImage']);
 
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('categories/{category}', [CategoryController::class, 'show']);

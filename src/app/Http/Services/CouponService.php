@@ -81,4 +81,37 @@ class CouponService{
         return $this->couponRepository->deleteCoupon($couponId);
     }
 
+    public function getDisabledCoupons(User $user){
+        if($user->role !== 'admin'){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
+        }
+
+        return $this->couponRepository->getDisabledCoupons();
+    }
+
+    public function renewCoupon(User $user, string $couponId, $couponData){
+        if($user->role !== 'admin'){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action',
+                ], 401));
+        }
+
+        $couponDatabase = $this->couponRepository->getCouponDisabled($couponId);
+
+        if($couponDatabase->deleted_at == null){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Coupon not deleted or expired for this renewal',
+                ], 400));
+        }
+
+        $couponData['deleted_at'] = null;
+
+        return $this->couponRepository->renewCoupon($couponId, $couponData);
+    }
+
 }
