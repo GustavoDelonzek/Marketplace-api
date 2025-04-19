@@ -14,6 +14,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendEmailOrderCreated;
 use App\Jobs\SendEmailStatusOrder;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
@@ -196,5 +197,33 @@ class OrderService{
         $order = $this->orderRepository->getOrder($orderId);
         SendEmailStatusOrder::dispatch($order->user, $order);
         return $canceled;
+    }
+
+    public function createRelatoryWeeklyOrder(User $user){
+
+        if($user->role !== 'admin' && $user->role !== 'moderator'){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Permission denied for this action'
+                ], 401)
+            );
+        }
+
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+
+        $orders = $this->orderRepository->getOrdersWeekly($startOfWeek, $endOfWeek);
+
+        if($orders->isEmpty()){
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'No orders found'
+                ], 400)
+            );
+        }
+
+        $pdf = Pdf::loadView('pdf.relatoryWeeklyOrders', ['orders' => $orders]);
+
+        return $pdf->download('relatoryWeekly-' . now()->format('Y-m-d') . '.pdf');
     }
 }

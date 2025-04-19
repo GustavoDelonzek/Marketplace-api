@@ -25,7 +25,7 @@ class StoreDiscountRequest extends FormRequest
             'description' => 'sometimes|string|max:280',
             'start_date' => 'required|date|after:now',
             'end_date' => 'required|date|after:start_date',
-            'discount_percentage' => 'required|numeric',
+            'discount_percentage' => 'required|numeric|max:60',
             'product_id' => 'required|exists:products,id',
         ];
     }

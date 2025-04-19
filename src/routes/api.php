@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('cart/clear', [CartController::class, 'clear']);
 
     Route::apiResource('orders', OrderController::class);
+    Route::get('relatory/orders', [OrderController::class, 'relatoryWeekly']);
 });
 
 Route::get('users/image', [UserController::class, 'showImage']);
@@ -79,4 +80,3 @@ Route::get('coupons/{coupon}', [CouponController::class, 'show']);
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/{product}', [ProductController::class, 'show']);
 Route::get('products/category/{category}', [ProductController::class, 'indexByCategory']);
-

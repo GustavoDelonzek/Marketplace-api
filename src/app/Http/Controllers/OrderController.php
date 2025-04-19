@@ -66,4 +66,12 @@ class OrderController extends Controller
             'message' => 'Order canceled successfully'
         ], 200);
     }
+
+    /**
+     * Create a relatory weekly order
+     */
+
+     public function relatoryWeekly(){
+         return $this->orderService->createRelatoryWeeklyOrder(Auth::user());
+     }
 }

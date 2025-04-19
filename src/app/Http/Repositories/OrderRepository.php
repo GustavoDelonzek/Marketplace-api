@@ -35,4 +35,8 @@ class OrderRepository{
         ]);
     }
 
+    public function getOrdersWeekly($startOfWeek, $endOfWeek){
+        return Order::whereBetween('order_date', [$startOfWeek, $endOfWeek])->get();
+    }
+
 }
