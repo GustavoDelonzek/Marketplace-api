@@ -49,7 +49,7 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, string $order)
     {
         $validated = $request->validated();
-        $updated = $this->orderService->updateStatus(Auth::user(), $validated, $order);
+        $updated = $this->orderService->updateStatus($validated, $order);
 
         return response()->json([
             'message' => 'Status updated successfully'
@@ -72,6 +72,6 @@ class OrderController extends Controller
      */
 
      public function relatoryWeekly(){
-         return $this->orderService->createRelatoryWeeklyOrder(Auth::user());
+         return $this->orderService->createRelatoryWeeklyOrder();
      }
 }

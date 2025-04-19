@@ -158,16 +158,7 @@ class OrderService{
         return $order;
     }
 
-    public function updateStatus(User $user, $updateData, $orderId){
-        if($user->role !== 'admin' && $user->role !== 'moderator'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action'
-                ], 401)
-            );
-        }
-
-
+    public function updateStatus($updateData, $orderId){
         $updated =$this->orderRepository->alterStatus($orderId, $updateData);
         $order = $this->orderRepository->getOrder($orderId);
         SendEmailStatusOrder::dispatch($order->user, $order);
@@ -199,16 +190,7 @@ class OrderService{
         return $canceled;
     }
 
-    public function createRelatoryWeeklyOrder(User $user){
-
-        if($user->role !== 'admin' && $user->role !== 'moderator'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action'
-                ], 401)
-            );
-        }
-
+    public function createRelatoryWeeklyOrder(){
         $startOfWeek = now()->startOfWeek();
         $endOfWeek = now()->endOfWeek();
 

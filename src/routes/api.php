@@ -32,26 +32,39 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    Route::middleware('role:admin')->group(function () {
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+        Route::put('categories/image/{category}', [CategoryController::class, 'updateImage']);
+
+        Route::apiResource('discounts', DiscountController::class)->except(['index', 'show']);
+
+        Route::apiResource('coupons', CouponController::class)->except(['index', 'show']);
+
+        Route::get('coupons/disabled', [CouponController::class, 'disabledCoupons']);
+        Route::put('coupons/{coupon}/renew', [CouponController::class, 'renewCoupon']);
+
+
+        Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
+    });
+
+    Route::middleware('role:admin,moderator')->group(function () {
+        Route::apiResource('products', ProductController::class)->except(['index', 'show']);
+
+        Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
+
+        Route::put('products/image/{product}', [ProductController::class, 'updateImage']);
+
+        Route::get('relatory/orders', [OrderController::class, 'relatoryWeekly']);
+
+        Route::put('orders/{order}', [OrderController::class, 'update']);
+    });
+
     Route::get('users/me', [UserController::class, 'showMe']);
     Route::put('users/me', [UserController::class, 'updateMe']);
     Route::delete('users/me', [UserController::class, 'deleteMe']);
-    Route::post('users/create-moderator', [UserController::class, 'storeModerator']);
     Route::put('users/image', [UserController::class, 'updateImage']);
 
     Route::apiResource('address', AddressController::class);
-
-    Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
-    Route::put('categories/image/{category}', [CategoryController::class, 'updateImage']);
-
-    Route::apiResource('discounts', DiscountController::class)->except(['index', 'show']);
-
-    Route::apiResource('coupons', CouponController::class)->except(['index', 'show']);
-    Route::get('coupons/disabled', [CouponController::class, 'disabledCoupons']);
-    Route::put('coupons/{coupon}/renew', [CouponController::class, 'renewCoupon']);
-
-    Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-    Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
-    Route::put('products/image/{product}', [ProductController::class, 'updateImage']);
 
     Route::get('cart', [CartController::class, 'index']);
     Route::get('cart/items', [CartController::class, 'show']);
@@ -60,8 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('cart/items', [CartController::class, 'deleteItem']);
     Route::delete('cart/clear', [CartController::class, 'clear']);
 
-    Route::apiResource('orders', OrderController::class);
-    Route::get('relatory/orders', [OrderController::class, 'relatoryWeekly']);
+    Route::apiResource('orders', OrderController::class)->except(['update']);
 });
 
 Route::get('users/image', [UserController::class, 'showImage']);

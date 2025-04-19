@@ -61,12 +61,6 @@ class UserService{
     }
 
     public function createModerator(User $user, $newUser){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'No permission to create a Moderator',
-                ], 401));
-        }
         $newUser['role'] = 'moderator';
 
         return $this->userRepository->createUser($newUser);
