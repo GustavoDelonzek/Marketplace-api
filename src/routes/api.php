@@ -49,9 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:admin,moderator')->group(function () {
         Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-
         Route::put('products/{product}/stock', [ProductController::class, 'updateStock']);
-
         Route::put('products/image/{product}', [ProductController::class, 'updateImage']);
 
         Route::get('relatory/orders', [OrderController::class, 'relatoryWeekly']);

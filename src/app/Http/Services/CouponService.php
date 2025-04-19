@@ -3,10 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\CouponRepository;
-use App\Models\User;
-use Error;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CouponService{
     public function __construct(protected CouponRepository $couponRepository)
@@ -17,13 +14,8 @@ class CouponService{
         return $this->couponRepository->getAllCoupons();
     }
 
-    public function createCoupon(User $user,array $couponData){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
+    public function createCoupon(array $couponData){
+
 
         if($couponData['discount_percentage'] > 60){
             throw new HttpResponseException(
@@ -39,11 +31,7 @@ class CouponService{
         return $this->couponRepository->showCoupon($couponId);
     }
 
-    public function updateCoupon(User $user, $couponId, $couponData){
-        if($user->role !== 'admin'){
-            throw new Error('Permission denied for this action', 401);
-        }
-
+    public function updateCoupon($couponId, $couponData){
         $couponDatabase = $this->couponRepository->showCoupon($couponId);
 
 
@@ -58,7 +46,6 @@ class CouponService{
             );
         }
 
-
         if(empty($couponData)){
             throw new HttpResponseException(
                 response()->json([
@@ -70,36 +57,15 @@ class CouponService{
         return $this->couponRepository->updateCoupon($couponId, $couponData);
     }
 
-    public function deleteCoupon(User $user, $couponId){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function deleteCoupon($couponId){
         return $this->couponRepository->deleteCoupon($couponId);
     }
 
-    public function getDisabledCoupons(User $user){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function getDisabledCoupons(){
         return $this->couponRepository->getDisabledCoupons();
     }
 
-    public function renewCoupon(User $user, string $couponId, $couponData){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function renewCoupon(string $couponId, $couponData){
         $couponDatabase = $this->couponRepository->getCouponDisabled($couponId);
 
         if($couponDatabase->deleted_at == null){

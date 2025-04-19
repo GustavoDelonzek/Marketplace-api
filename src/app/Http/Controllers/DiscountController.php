@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDiscountRequest;
 use App\Http\Requests\UpdateDiscountRequest;
 use App\Http\Services\DiscountService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DiscountController extends Controller
 {
@@ -31,7 +29,7 @@ class DiscountController extends Controller
     {
         $validated = $request->validated();
 
-        $created = $this->discountService->createDiscount(Auth::user(), $validated);
+        $created = $this->discountService->createDiscount($validated);
 
         return response()->json([
             'Message' => 'Discount created successfully'
@@ -53,7 +51,7 @@ class DiscountController extends Controller
     {
         $validated = $request->validated();
 
-        $updated = $this->discountService->updateDiscount(Auth::user(), $discount, $validated);
+        $updated = $this->discountService->updateDiscount( $discount, $validated);
 
         return response()->json([
             'message' => 'updated successfully'
@@ -66,7 +64,7 @@ class DiscountController extends Controller
      */
     public function destroy(string $discount)
     {
-        $deleted = $this->discountService->deleteDiscount(Auth::user(), $discount);
+        $deleted = $this->discountService->deleteDiscount($discount);
 
         return response()->json([
             'message' => 'deleted successfully'

@@ -33,7 +33,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        $created = $this->categoryService->createCategory(Auth::user(), $validated);
+        $created = $this->categoryService->createCategory( $validated);
 
         return response()->json([
             'Message' => 'Category created successfully'
@@ -55,7 +55,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        $updated = $this->categoryService->updateCategory($validated, $category, Auth::user());
+        $updated = $this->categoryService->updateCategory($validated, $category);
 
         return response()->json([
             'message' => 'Category updated successfully'
@@ -67,7 +67,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $category)
     {
-        $deleted = $this->categoryService->deleteCategory($category, Auth::user());
+        $deleted = $this->categoryService->deleteCategory($category);
 
         return response()->json([
             'message' => 'Category deleted successfully'

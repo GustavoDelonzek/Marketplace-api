@@ -4,10 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Repositories\DiscountRepository;
 use App\Http\Traits\CanLoadRelationships;
-use App\Models\User;
-use Error;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Http;
 
 class DiscountService{
     use CanLoadRelationships;
@@ -26,14 +23,7 @@ class DiscountService{
     }
 
 
-    public function createDiscount(User $user, $discountData){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function createDiscount($discountData){
         return $this->discountRepository->createDiscount($discountData);
     }
 
@@ -45,14 +35,7 @@ class DiscountService{
         return $discount;
     }
 
-    public function updateDiscount(User $user,int $discountId, $discountData){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function updateDiscount(int $discountId, $discountData){
         $discountDatabase = $this->discountRepository->showDiscount($discountId);
 
 
@@ -78,13 +61,7 @@ class DiscountService{
 
     }
 
-    public function deleteDiscount(User $user, int $discountId){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
+    public function deleteDiscount(int $discountId){
         return $this->discountRepository->deleteDiscount($discountId);
     }
 }

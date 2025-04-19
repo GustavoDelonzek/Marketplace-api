@@ -27,14 +27,7 @@ class CategoryService{
         return $categories;
     }
 
-    public function createCategory(User $user, $categoryData){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function createCategory($categoryData){
         return $this->categoryRepository->createCategory($categoryData);
     }
 
@@ -44,15 +37,7 @@ class CategoryService{
         return $category;
     }
 
-    public function updateCategory($categoryData, $categoryId,User $user){
-
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function updateCategory($categoryData, $categoryId){
         if(empty($categoryData)){
             throw new HttpResponseException(
                 response()->json([
@@ -64,14 +49,7 @@ class CategoryService{
 
     }
 
-    public function deleteCategory($categoryId,User $user){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Permission denied for this action',
-                ], 401));
-        }
-
+    public function deleteCategory($categoryId){
         return $this->categoryRepository->deleteCategory($categoryId);
     }
 

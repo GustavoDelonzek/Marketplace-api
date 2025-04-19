@@ -6,8 +6,7 @@ use App\Http\Requests\RenewCouponRequest;
 use App\Http\Requests\StoreCouponRequest;
 use App\Http\Requests\UpdateCouponRequest;
 use App\Http\Services\CouponService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class CouponController extends Controller
 {
@@ -29,7 +28,7 @@ class CouponController extends Controller
     {
         $validated = $request->validated();
 
-        $created = $this->couponService->createCoupon(Auth::user(), $validated);
+        $created = $this->couponService->createCoupon($validated);
 
         return response()->json([
             'message' => 'Coupon created successfully'
@@ -51,7 +50,7 @@ class CouponController extends Controller
     {
         $validated = $request->validated();
 
-        $updated = $this->couponService->updateCoupon(Auth::user(), $coupon, $validated);
+        $updated = $this->couponService->updateCoupon($coupon, $validated);
 
         return response()->json([
             'message' => 'Coupon updated successfully'
@@ -63,7 +62,7 @@ class CouponController extends Controller
      */
     public function destroy(string $coupon)
     {
-        $deleted = $this->couponService->deleteCoupon(Auth::user(), $coupon);
+        $deleted = $this->couponService->deleteCoupon($coupon);
         return response()->json([
             'message' => 'deleted successfully'
         ], 200);
@@ -71,13 +70,13 @@ class CouponController extends Controller
 
     public function disabledCoupons()
     {
-        return $this->couponService->getDisabledCoupons(Auth::user());
+        return $this->couponService->getDisabledCoupons();
     }
 
     public function renewCoupon(string $coupon, RenewCouponRequest $request){
         $validated = $request->validated();
 
-        $updated = $this->couponService->renewCoupon(Auth::user(), $coupon, $validated);
+        $updated = $this->couponService->renewCoupon($coupon, $validated);
 
         return response()->json([
             'message' => 'Coupon updated successfully'

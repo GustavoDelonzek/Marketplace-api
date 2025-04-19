@@ -19,12 +19,7 @@ class ProductService{
         return $this->productRepository->getAllProducts();
     }
 
-    public function createProduct(User $user, $productData){
-        if($user->role !== 'admin' && $user->role !== 'moderator'){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Permission denied for this action'
-            ], 401));
-        }
+    public function createProduct($productData){
 
         if(empty($productData)){
             throw new HttpResponseException(response()->json([
@@ -39,13 +34,7 @@ class ProductService{
         return $this->productRepository->showProduct($productId);
     }
 
-    public function updateProduct(User $user, $productId, $productData){
-        if($user->role !== 'admin' && $user->role !== 'moderator'){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Permission denied for this action'
-            ], 401));
-        }
-
+    public function updateProduct($productId, $productData){
         if(empty($productData)){
             throw new HttpResponseException(response()->json([
                 'message' => 'Nothing to update!'
@@ -55,13 +44,7 @@ class ProductService{
         return $this->productRepository->updateProduct($productId, $productData);
     }
 
-    public function updateStock(User $user, $productId, $productData){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Permission denied for this action'
-            ], 401));
-        }
-
+    public function updateStock($productId, $productData){
         if(empty($productData)){
             throw new HttpResponseException(response()->json([
                 'message' => 'Nothing to update!'
@@ -71,13 +54,7 @@ class ProductService{
         return $this->productRepository->updateProduct($productId, $productData);
     }
 
-    public function deleteProduct(User $user, $productId){
-        if($user->role !== 'admin'){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Permission denied for this action'
-            ], 401));
-        }
-
+    public function deleteProduct( $productId){
         return $this->productRepository->deleteProduct($productId);
     }
 
