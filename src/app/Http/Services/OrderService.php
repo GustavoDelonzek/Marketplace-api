@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\OrderCreated;
 use App\Http\Repositories\AddressRepository;
 use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
@@ -14,6 +15,7 @@ use App\Http\Resources\OrderResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendEmailOrderCreated;
 use App\Jobs\SendEmailStatusOrder;
+use App\Models\Order;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
@@ -136,6 +138,7 @@ class OrderService{
 
             DB::commit();
             SendEmailOrderCreated::dispatch($user, $createdOrder);
+            OrderCreated::dispatch($createdOrder);
             return $createdOrder;
         } catch(Exception $e){
             DB::rollBack();
