@@ -10,6 +10,7 @@ use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\OrderItemRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Http\Resources\OrderResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendEmailOrderCreated;
 use App\Jobs\SendEmailStatusOrder;
@@ -47,7 +48,7 @@ class OrderService{
 
         $orders = $this->loadRelationships($queryOrders)->get();
 
-        return $orders;
+        return OrderResource::collection($orders);
     }
 
     public function validateAddress($user, $addressId){
@@ -155,7 +156,7 @@ class OrderService{
 
         $order = $this->loadRelationships($order);
 
-        return $order;
+        return new OrderResource($order);
     }
 
     public function updateStatus($updateData, $orderId){

@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\DiscountRepository;
+use App\Http\Resources\DiscountResource;
 use App\Http\Traits\CanLoadRelationships;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -19,7 +20,7 @@ class DiscountService{
 
         $discount = $this->loadRelationships($discountQuery)->get();
 
-        return $discount;
+        return DiscountResource::collection($discount);
     }
 
 
@@ -32,7 +33,7 @@ class DiscountService{
 
         $discount = $this->loadRelationships($discountQuery);
 
-        return $discount;
+        return new DiscountResource($discount);
     }
 
     public function updateDiscount(int $discountId, $discountData){

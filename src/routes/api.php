@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('users/me', [UserController::class, 'updateMe']);
     Route::delete('users/me', [UserController::class, 'deleteMe']);
     Route::put('users/image', [UserController::class, 'updateImage']);
+    Route::get('users/image', [UserController::class, 'showImage']);
 
     Route::apiResource('address', AddressController::class);
 
@@ -74,7 +75,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('orders', OrderController::class)->except(['update']);
 });
 
-Route::get('users/image', [UserController::class, 'showImage']);
 Route::get('categories/image/{category}', [CategoryController::class, 'showImage']);
 Route::get('products/image/{product}', [ProductController::class, 'showImage']);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\AddressRepository;
+use App\Http\Resources\AddressResource;
 use Error;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -12,7 +13,8 @@ class AddressService{
     }
 
     public function addressUser($userId){
-        return $this->addressRepository->getAllAddressByUser($userId);
+        $addresses = $this->addressRepository->getAllAddressByUser($userId);
+        return AddressResource::collection($addresses);
     }
 
     public function createAddress(int $userId, $addressData){
@@ -31,7 +33,7 @@ class AddressService{
                 ], 401));
         }
 
-        return $address;
+        return new AddressResource($address);
     }
 
     public function updateAddress($addressData, $addressId, $userId){
@@ -43,11 +45,9 @@ class AddressService{
                     'message' => 'Permission denied to update this address',
                 ], 401));
         }
-        $updated = $this->addressRepository->updateAddress($addressId, $addressData);
+        return $this->addressRepository->updateAddress($addressId, $addressData);
 
-        return response()->json([
-            'message' => 'Updated successfully'
-        ]);
+
     }
 
     public function deleteAddress($addressId, $userId){
@@ -60,12 +60,7 @@ class AddressService{
                 ],  401));
         }
 
-        $deleted = $this->addressRepository->deleteAddress($addressId);
-
-        return response()->json([
-            'message' => 'Deleted successfully'
-        ]);
-
+        return $this->addressRepository->deleteAddress($addressId);
     }
 
 }

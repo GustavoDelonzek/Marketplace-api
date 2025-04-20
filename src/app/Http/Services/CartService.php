@@ -6,6 +6,7 @@ use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
 use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\ProductRepository;
+use App\Http\Resources\CartResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Models\Cart;
 use App\Models\Discount;
@@ -26,13 +27,14 @@ class CartService{
     }
 
     public function getAllCartsByUser($userId){
-        return $this->cartRepository->getCartUser($userId);
+        $cart = $this->cartRepository->getCartUser($userId);
+        return new CartResource($cart);
     }
 
     public function showCart($userId){
         $cartQuery = $this->cartRepository->showCart($userId);
         $cart = $this->loadRelationships($cartQuery);
-        return $cart;
+        return new CartResource($cart);
     }
 
     public function createCartItem(User $user,$cartItemData){

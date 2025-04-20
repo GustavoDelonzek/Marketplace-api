@@ -21,11 +21,11 @@ class OrderResource extends JsonResource
             'order_date' => $this->order_date,
             'status' => $this->status,
             'total_amount' => $this->total_amount,
-            'coupon_id' => $this->coupon_id,
+            'coupon_id' => $this->whenNotNull($this->coupon_id),
             'user' => new UserResource($this->whenLoaded('user')),
             'coupon' => new CouponResource($this->whenLoaded('coupon')),
             'address' => new AddressResource($this->whenLoaded('address')),
-            'order_items' => OrderItemResource::collection($this->whenLoaded('order_items')),
+            'order_items' => OrderItemResource::collection($this->whenLoaded('orderItems')),
         ];
     }
 }

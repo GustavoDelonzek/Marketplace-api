@@ -13,7 +13,8 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'image_path',
     ];
 
     protected $hidden = [

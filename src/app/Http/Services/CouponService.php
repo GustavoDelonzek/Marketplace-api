@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\CouponRepository;
+use App\Http\Resources\CouponResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CouponService{
@@ -11,7 +12,8 @@ class CouponService{
     }
 
     public function getAllCoupons(){
-        return $this->couponRepository->getAllCoupons();
+        $coupons = $this->couponRepository->getAllCoupons();
+        return CouponResource::collection($coupons);
     }
 
     public function createCoupon(array $couponData){
@@ -28,7 +30,8 @@ class CouponService{
     }
 
     public function showCoupon(int $couponId){
-        return $this->couponRepository->showCoupon($couponId);
+        $coupon = $this->couponRepository->showCoupon($couponId);
+        return new CouponResource($coupon);
     }
 
     public function updateCoupon($couponId, $couponData){
@@ -62,7 +65,8 @@ class CouponService{
     }
 
     public function getDisabledCoupons(){
-        return $this->couponRepository->getDisabledCoupons();
+        $disabledCoupons = $this->couponRepository->getDisabledCoupons();
+        return CouponResource::collection($disabledCoupons);
     }
 
     public function renewCoupon(string $couponId, $couponData){

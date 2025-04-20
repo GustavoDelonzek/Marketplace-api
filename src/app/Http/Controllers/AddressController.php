@@ -33,10 +33,6 @@ class AddressController extends Controller
 
         $address = $this->addressService->createAddress(Auth::id(), $validated);
 
-        if(!$address){
-            throw new Error('Error creating address');
-        }
-
         return response()->json([
             'message' => "Created successfully"
         ], 201);
@@ -48,9 +44,7 @@ class AddressController extends Controller
      */
     public function show(string $address)
     {
-        return response()->json([
-            'address' => $this->addressService->showAddress($address, Auth::id())
-        ], 202);
+        return response()->json($this->addressService->showAddress($address, Auth::id()), 200);
     }
 
     /**
@@ -60,7 +54,11 @@ class AddressController extends Controller
     {
         $validated = $request->validated();
 
-        return $this->addressService->updateAddress($validated, $address, Auth::id());
+        $updated = $this->addressService->updateAddress($validated, $address, Auth::id());
+
+        return response()->json([
+            'message' => 'Updated successfully'
+        ]);
 
     }
 
@@ -69,6 +67,10 @@ class AddressController extends Controller
      */
     public function destroy(int $address)
     {
-        return $this->addressService->deleteAddress($address, Auth::id());
+        $deleted = $this->addressService->deleteAddress($address, Auth::id());
+
+        return response()->json([
+            'message' => 'Deleted successfully'
+        ]);
     }
 }

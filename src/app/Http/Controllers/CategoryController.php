@@ -6,9 +6,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Requests\UpdateImageRequest;
 use App\Http\Services\CategoryService;
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class CategoryController extends Controller
 {

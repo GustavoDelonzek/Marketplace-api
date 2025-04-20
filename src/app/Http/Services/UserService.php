@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\UserRepository;
+use App\Http\Resources\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendEmailWelcome;
 use App\Models\User;
@@ -49,7 +50,7 @@ class UserService{
     public function showMe($user){
         $query = $this->loadRelationships($user);
 
-        return $query;
+        return new UserResource($query);
     }
 
     public function updateMe(User $user, $userUpdates){
@@ -60,7 +61,7 @@ class UserService{
         return $this->userRepository->deleteUser($user);
     }
 
-    public function createModerator(User $user, $newUser){
+    public function createModerator($newUser){
         $newUser['role'] = 'moderator';
 
         return $this->userRepository->createUser($newUser);

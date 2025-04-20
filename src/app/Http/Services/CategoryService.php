@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\CategoryRepository;
+use App\Http\Resources\CategoryResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Models\User;
 use Error;
@@ -24,7 +25,7 @@ class CategoryService{
 
         $categories = $this->loadRelationships($query)->get();
 
-        return $categories;
+        return CategoryResource::collection($categories);
     }
 
     public function createCategory($categoryData){
@@ -34,7 +35,7 @@ class CategoryService{
     public function showCategory($categoryId){
         $categoryQuery = $this->categoryRepository->showCategory($categoryId);
         $category = $this->loadRelationships($categoryQuery);
-        return $category;
+        return new CategoryResource($category);
     }
 
     public function updateCategory($categoryData, $categoryId){
@@ -46,7 +47,6 @@ class CategoryService{
         }
 
         return $this->categoryRepository->updateCategory($categoryId, $categoryData);
-
     }
 
     public function deleteCategory($categoryId){
@@ -56,7 +56,6 @@ class CategoryService{
     public function updateImage($categoryId, $image){
         $category = $this->categoryRepository->showCategory($categoryId);
         $imageNome = Str::uuid() . '.' . $image->getClientOriginalExtension();
-
 
         if($category->image_path){
             Storage::delete($category->image_path);

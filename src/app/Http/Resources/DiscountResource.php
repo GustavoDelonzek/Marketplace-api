@@ -16,11 +16,11 @@ class DiscountResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'product_id' => $this->product_id,
             'description' => $this->description,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'discount_percentage' => $this->discount_percentage,
-            'product_id' => $this->product_id,
             'product' => new ProductResource($this->whenLoaded('product')),
         ];
     }

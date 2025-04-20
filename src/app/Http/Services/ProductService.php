@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\ProductRepository;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -16,7 +17,8 @@ class ProductService{
     }
 
     public function getAllProducts(){
-        return $this->productRepository->getAllProducts();
+        $products = $this->productRepository->getAllProducts();
+        return ProductResource::collection($products);
     }
 
     public function createProduct($productData){
@@ -31,7 +33,8 @@ class ProductService{
     }
 
     public function showProduct($productId){
-        return $this->productRepository->showProduct($productId);
+        $product = $this->productRepository->showProduct($productId);
+        return new ProductResource($product);
     }
 
     public function updateProduct($productId, $productData){
@@ -59,7 +62,8 @@ class ProductService{
     }
 
     public function getAllProductsByCategory($categoryId){
-        return $this->productRepository->getAllProductsByCategory($categoryId);
+        $products = $this->productRepository->getAllProductsByCategory($categoryId);
+        return ProductResource::collection($products);
     }
 
     public function updateImage($productId, $image){

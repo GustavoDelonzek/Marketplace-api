@@ -20,6 +20,7 @@ class CouponResource extends JsonResource
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'discount_percentage' => $this->discount_percentage,
+            'deleted_at' => $this->whenNotNull($this->deleted_at),
         ];
     }
 }

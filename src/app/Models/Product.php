@@ -18,7 +18,8 @@ class Product extends Model
         'category_id',
         'name',
         'stock',
-        'price'
+        'price',
+        'image_path',
     ];
 
     protected $hidden = [

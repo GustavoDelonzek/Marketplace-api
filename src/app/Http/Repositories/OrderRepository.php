@@ -22,7 +22,7 @@ class OrderRepository{
     }
 
     public function getOrder($orderId){
-        return Order::findOrFail($orderId);
+        return Order::with('orderItems')->findOrFail($orderId);
     }
 
     public function alterStatus($orderId, $orderData){
