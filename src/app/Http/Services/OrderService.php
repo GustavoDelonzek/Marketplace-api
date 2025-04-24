@@ -121,6 +121,14 @@ class OrderService{
             foreach($cartItems as $cartItem){
                 $orderItem['unit_price'] = $this->addDiscount($cartItem->product_id);
                 $orderItem['product_id'] = $cartItem->product_id;
+                $stockProduct = $this->productRepository->getStockProduct($cartItem->product_id);
+                if($stockProduct < $cartItem->quantity){
+                    throw new HttpResponseException(
+                        response()->json([
+                            'message' => 'Product stock is not enough for this quantity, update your quantity or remove this product from cart',
+                        ], 400)
+                    );
+                }
                 $orderItem['quantity'] = $cartItem->quantity;
                 $orderItem['order_id'] = $createdOrder->id;
 
