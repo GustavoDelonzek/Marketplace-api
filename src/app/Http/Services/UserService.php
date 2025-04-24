@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -100,5 +101,30 @@ class UserService{
             'Content-Type' => $mime,
             'Content-Disposition' => 'inline',
         ]);
+    }
+
+    public function sendResetLinkEmail($user){
+        $status = Password::sendResetLink(
+            ['email' => $user['email']]
+        );
+
+        if($status == Password::RESET_LINK_SENT){
+            return response()->json(['message' => 'Email sent successfully'], 201);
+        }
+
+        return response()->json(['message' => 'Email not sent'], 400);
+    }
+
+    public function resetPassword($user){
+        $status = Password::reset(
+            ['email' => $user['email'], 'password' => $user['password'], 'token' => $user['token']],
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->save();
+            }
+        );
+
+        return response()->json(['message' => 'Password updated successfully'], 201);
     }
 }

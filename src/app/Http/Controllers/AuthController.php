@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmailResetPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Services\UserService;
 use App\Jobs\SendEmailVerification;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -43,5 +45,17 @@ class AuthController extends Controller
         SendEmailVerification::dispatch(Auth::user());
         return response()->json(['message' => 'Email verification notification sent successfully'], 201);
     }
+
+    public function sendResetLinkEmail(EmailResetPasswordRequest $request){
+        $validated = $request->validated();
+        return $this->userService->sendResetLinkEmail($validated);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request){
+        $validated = $request->validated();
+        return $this->userService->resetPassword($validated);
+    }
+
+
 
 }
