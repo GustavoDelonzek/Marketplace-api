@@ -30,7 +30,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::get('email/verify/{id}/{hash}', [AuthController::class, 'confirmEmail'])->middleware(['signed', 'auth:sanctum'])->name('verification.verify');
+
+Route::post('email/verification-notification', [AuthController::class, 'verificationNotification'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);

@@ -5,9 +5,10 @@ namespace App\Http\Services;
 use App\Http\Repositories\UserRepository;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\CanLoadRelationships;
+use App\Jobs\SendEmailVerification;
 use App\Jobs\SendEmailWelcome;
 use App\Models\User;
-use Error;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -42,8 +43,11 @@ class UserService{
 
     public function register($user){
         $user['password'] = Hash::make($user['password']);
+
         $newUser = $this->userRepository->createUser($user);
-        SendEmailWelcome::dispatch($newUser);
+
+        SendEmailVerification::dispatch($newUser);
+
         return $newUser;
     }
 

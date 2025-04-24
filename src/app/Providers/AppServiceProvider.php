@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Events\OrderStatusUpdated;
 use App\Listeners\SendOrderStatusUpdated;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 

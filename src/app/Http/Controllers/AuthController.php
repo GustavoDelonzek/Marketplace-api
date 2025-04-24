@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Services\UserService;
+use App\Jobs\SendEmailVerification;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,4 +29,19 @@ class AuthController extends Controller
         $validated = $request->validated();
         return response()->json($this->userService->register($validated), 201);
     }
+
+    public function confirmEmail(EmailVerificationRequest $request){
+        if ($request->user() && $request->user()->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already confirmed'], 200);
+        }
+
+        $request->fulfill();
+        return response()->json(['message' => 'Email confirmed successfully'], 201);
+    }
+
+    public function verificationNotification(){
+        SendEmailVerification::dispatch(Auth::user());
+        return response()->json(['message' => 'Email verification notification sent successfully'], 201);
+    }
+
 }
