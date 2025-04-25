@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Repositories\ProductRepository;
 use App\Http\Resources\ProductResource;
+use App\Http\Traits\CanLoadRelationships;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -12,12 +13,18 @@ use Illuminate\Support\Str;
 
 
 class ProductService{
+    use CanLoadRelationships;
+    private array $relations = ['category', 'discounts'];
+
     public function __construct(protected ProductRepository $productRepository)
     {
     }
 
     public function getAllProducts(){
-        $products = $this->productRepository->getAllProducts();
+        $queryProducts = $this->productRepository->getAllProducts();
+
+        $products = $this->loadRelationships($queryProducts)->get();
+
         return ProductResource::collection($products);
     }
 
@@ -33,7 +40,8 @@ class ProductService{
     }
 
     public function showProduct($productId){
-        $product = $this->productRepository->showProduct($productId);
+        $productQuery = $this->productRepository->showProduct($productId);
+        $product = $this->loadRelationships($productQuery);
         return new ProductResource($product);
     }
 
