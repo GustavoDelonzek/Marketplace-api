@@ -24,7 +24,7 @@ class StoreCouponRequest extends FormRequest
         return [
             'code' => 'required|string|unique:coupons|max:9',
             'discount_percentage' => 'required|numeric|max:60',
-            'start_date' => 'required|date|after:now',
+            'start_date' => 'required|date|after:+10 seconds',
             'end_date' => 'required|date|after:start_date'
         ];
     }

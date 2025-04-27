@@ -23,7 +23,7 @@ class RenewCouponRequest extends FormRequest
     {
         return [
             'discount_percentage' => 'sometimes|numeric|max:60',
-            'start_date' => 'required|date|after:now',
+            'start_date' => 'required|date|after:+10 seconds',
             'end_date' => 'required|date|after:start_date'
         ];
     }

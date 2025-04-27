@@ -22,9 +22,9 @@ class UpdateCouponRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'sometimes|string|max:12',
+            'code' => 'sometimes|string|max:9',
             'discount_percentage' => 'sometimes|numeric|max:60',
-            'start_date' => 'sometimes|date|after:now',
+            'start_date' => 'sometimes|date|after:+10 seconds',
             'end_date' => 'sometimes|date|after:start_date'
         ];
     }
