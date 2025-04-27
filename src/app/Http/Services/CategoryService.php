@@ -2,12 +2,11 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Business\ImageNotFoundException;
+use App\Exceptions\Business\NothingToUpdateException;
 use App\Http\Repositories\CategoryRepository;
 use App\Http\Resources\CategoryResource;
 use App\Http\Traits\CanLoadRelationships;
-use App\Models\User;
-use Error;
-use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -40,10 +39,7 @@ class CategoryService{
 
     public function updateCategory($categoryData, $categoryId){
         if(empty($categoryData)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Nothing to update!'
-                ], 204));
+            throw new NothingToUpdateException();
         }
 
         return $this->categoryRepository->updateCategory($categoryId, $categoryData);
@@ -69,20 +65,8 @@ class CategoryService{
     public function showImage($categoryId){
         $category = $this->categoryRepository->showCategory($categoryId);
 
-        if(!$category->image_path){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Image not found',
-                ], 404)
-            );
-        }
-
-        if (!Storage::exists($category->image_path)) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Image not found',
-                ], 404)
-            );
+        if(!$category->image_path || !Storage::exists($category->image_path)){
+            throw new ImageNotFoundException();
         }
 
         $file = Storage::get($category->image_path);

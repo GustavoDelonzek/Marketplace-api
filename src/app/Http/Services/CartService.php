@@ -2,17 +2,16 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Business\ProductNotInYourCart;
+use App\Exceptions\Business\ProductStockIsNotEnoughException;
+use App\Exceptions\Http\BadRequestException;
 use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
 use App\Http\Repositories\DiscountRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Resources\CartResource;
 use App\Http\Traits\CanLoadRelationships;
-use App\Models\Cart;
-use App\Models\Discount;
 use App\Models\User;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Auth;
 
 class CartService{
     use CanLoadRelationships;
@@ -39,19 +38,11 @@ class CartService{
 
     public function createCartItem(User $user,$cartItemData){
         if($this->productRepository->getStockProduct($cartItemData['product_id']) < $cartItemData['quantity']){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Product stock is not enough for this quantity'
-                ], 400)
-            );
+            throw new ProductStockIsNotEnoughException();
         }
 
         if($this->cartItemRepository->productAlreadyInCart($user->cart->id, $cartItemData['product_id'])){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Product already in cart'
-                ], 400)
-            );
+            throw new BadRequestException('Product already in cart');
         }
 
         $cartItemData['cart_id'] = $user->cart->id;
@@ -72,19 +63,11 @@ class CartService{
 
     public function updateCartItem(User $user, $cartItemData){
         if($this->productRepository->getStockProduct($cartItemData['product_id']) < $cartItemData['quantity']){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Product stock is not enough for this quantity'
-                ], 400)
-            );
+            throw new ProductStockIsNotEnoughException();
         }
 
         if(!$this->cartItemRepository->productAlreadyInCart($user->cart->id, $cartItemData['product_id'])){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Product not in your cart'
-                ], 400)
-            );
+            throw new ProductNotInYourCart();
         }
 
         return $this->cartItemRepository->updateQuantityCartItem($user->cart->id, $cartItemData);
@@ -92,11 +75,7 @@ class CartService{
 
     public function deleteCartItem(User $user, $productId){
         if(!$this->cartItemRepository->productAlreadyInCart($user->cart->id, $productId)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Product not in your cart'
-                ], 400)
-            );
+            throw new ProductNotInYourCart();
         }
 
         return $this->cartItemRepository->deleteCartItem($user->cart->id, $productId);

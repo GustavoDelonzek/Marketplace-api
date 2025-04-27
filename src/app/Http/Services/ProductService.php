@@ -2,6 +2,9 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Business\ImageNotFoundException;
+use App\Exceptions\Business\NothingToUpdateException;
+use App\Exceptions\Http\BadRequestException;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
@@ -29,13 +32,6 @@ class ProductService{
     }
 
     public function createProduct($productData){
-
-        if(empty($productData)){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Nothing to store!'
-            ], 400));
-        }
-
         return $this->productRepository->createProduct($productData);
     }
 
@@ -47,9 +43,7 @@ class ProductService{
 
     public function updateProduct($productId, $productData){
         if(empty($productData)){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Nothing to update!'
-            ], 400));
+            throw new NothingToUpdateException();
         }
 
         return $this->productRepository->updateProduct($productId, $productData);
@@ -57,9 +51,7 @@ class ProductService{
 
     public function updateStock($productId, $productData){
         if(empty($productData)){
-            throw new HttpResponseException(response()->json([
-                'message' => 'Nothing to update!'
-            ], 400));
+            throw new NothingToUpdateException();
         }
 
         return $this->productRepository->updateProduct($productId, $productData);
@@ -91,20 +83,8 @@ class ProductService{
     public function showImage($productId){
         $product = $this->productRepository->showProduct($productId);
 
-        if(!$product->image_path){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Image not found',
-                ], 404)
-            );
-        }
-
-        if(!Storage::exists($product->image_path)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Image not found',
-                ], 404)
-            );
+        if(!$product->image_path || !Storage::exists($product->image_path)){
+            throw new ImageNotFoundException();
         }
 
         $file = Storage::get($product->image_path);

@@ -2,6 +2,8 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Business\EndDateNotAfterStartDateException;
+use App\Exceptions\Business\NothingToUpdateException;
 use App\Http\Repositories\DiscountRepository;
 use App\Http\Resources\DiscountResource;
 use App\Http\Traits\CanLoadRelationships;
@@ -44,18 +46,12 @@ class DiscountService{
         $end_date = $discountData['end_date'] ?? null;
 
         if(!$start_date && $end_date && $end_date <= $discountDatabase->start_date){
-            throw new HttpResponseException(
-                response()->json([
-                    'message'=>'End date must be previous than start date'
-                ], 400));
+            throw new EndDateNotAfterStartDateException();
         }
 
 
         if(empty($discountData)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Nothing to update!'
-                ], 400));
+            throw new NothingToUpdateException();
         }
 
         return $this->discountRepository->updateDiscount($discountId, $discountData);

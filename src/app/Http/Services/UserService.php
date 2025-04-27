@@ -2,6 +2,8 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Business\ImageNotFoundException;
+use App\Exceptions\Http\UnauthorizedException;
 use App\Http\Repositories\UserRepository;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\CanLoadRelationships;
@@ -27,11 +29,8 @@ class UserService{
     public function login($user){
         $loginUser = $this->userRepository->getUserByEmail($user['email']);
 
-        if(!$user || !Hash::check($user['password'], $loginUser->password)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Invalid credentials',
-                ], 401));
+        if(!$loginUser || !Hash::check($user['password'], $loginUser->password)){
+            throw new UnauthorizedException('Invalid credentials');
         }
 
         $token = $loginUser->createToken('api-token')->plainTextToken;
@@ -86,12 +85,8 @@ class UserService{
 
     public function showImage(User $user)
     {
-        if (!Storage::exists($user->image_path)) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Image not found',
-                ], 404)
-            );
+        if (!Storage::exists($user->image_path) || !$user->image_path) {
+            throw new ImageNotFoundException();
         }
 
         $file = Storage::get($user->image_path);

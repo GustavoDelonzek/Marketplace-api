@@ -3,6 +3,10 @@
 namespace App\Http\Services;
 
 use App\Events\OrderCreated;
+use App\Exceptions\Business\ProductStockIsNotEnoughException;
+use App\Exceptions\Http\BadRequestException;
+use App\Exceptions\Http\NotFoundException;
+use App\Exceptions\Http\UnauthorizedException;
 use App\Http\Repositories\AddressRepository;
 use App\Http\Repositories\CartItemRepository;
 use App\Http\Repositories\CartRepository;
@@ -55,21 +59,13 @@ class OrderService{
 
     public function validateAddress($user, $addressId){
         if(!$this->addressRepository->addressIsFromUser($addressId, $user->id)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Address not belongs to this user'
-                ], 400)
-            );
+            throw new UnauthorizedException('Address not belongs to this user');
         }
     }
 
     public function validateCart($user){
         if(count($user->cart->cartItems) == 0){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Your cart is empty!'
-                ], 400)
-            );
+            throw new BadRequestException('Your cart is empty!');
         }
     }
 
@@ -95,9 +91,7 @@ class OrderService{
         $coupon = $this->couponRepository->showCoupon($couponId);
 
         if(now() < $coupon->start_date || now() > $coupon->end_date){
-            throw new HttpResponseException(
-                response()->json(['message' => 'Coupon date is invalid'], 400)
-            );
+            throw new BadRequestException('Coupon date is invalid');
         }
 
        return $totalAmountLocal = $totalAmountLocal - ($totalAmountLocal * $coupon->discount_percentage / 100);
@@ -123,11 +117,7 @@ class OrderService{
                 $orderItem['product_id'] = $cartItem->product_id;
                 $stockProduct = $this->productRepository->getStockProduct($cartItem->product_id);
                 if($stockProduct < $cartItem->quantity){
-                    throw new HttpResponseException(
-                        response()->json([
-                            'message' => 'Product stock is not enough for this quantity, update your quantity or remove this product from cart',
-                        ], 400)
-                    );
+                    throw new ProductStockIsNotEnoughException();
                 }
                 $orderItem['quantity'] = $cartItem->quantity;
                 $orderItem['order_id'] = $createdOrder->id;
@@ -158,11 +148,7 @@ class OrderService{
         $order = $this->orderRepository->getOrder($orderId);
 
         if($order->user_id !== $userId){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Order selected not belongs this user'
-                ])
-            );
+            throw new UnauthorizedException('Order selected not belongs this user');
         }
 
         $order = $this->loadRelationships($order);
@@ -181,19 +167,11 @@ class OrderService{
         $order = $this->orderRepository->getOrder($orderId);
 
         if($order->user_id !== $user->id){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Order selected not belongs this user'
-                ], 401)
-            );
+            throw new UnauthorizedException('Order selected not belongs this user');
         }
 
         if($order->status !== 'processing' && $order->status !== 'pending'){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Order not in pending or processing status, not possible to cancel'
-                ], 401)
-            );
+            throw new UnauthorizedException('Order not in pending or processing status, not possible to cancel');
         }
 
         $canceled = $this->orderRepository->cancelOrder($orderId);
@@ -209,11 +187,7 @@ class OrderService{
         $orders = $this->orderRepository->getOrdersWeekly($startOfWeek, $endOfWeek);
 
         if($orders->isEmpty()){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'No orders found'
-                ], 400)
-            );
+            throw new NotFoundException('No orders found');
         }
 
         $pdf = Pdf::loadView('pdf.relatoryWeeklyOrders', ['orders' => $orders]);

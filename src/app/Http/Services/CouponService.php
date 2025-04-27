@@ -2,6 +2,10 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Business\CouponNotExpired;
+use App\Exceptions\Business\DiscountPercentageTooHighException;
+use App\Exceptions\Business\EndDateNotAfterStartDateException;
+use App\Exceptions\Business\NothingToUpdateException;
 use App\Http\Repositories\CouponRepository;
 use App\Http\Resources\CouponResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -20,10 +24,7 @@ class CouponService{
 
 
         if($couponData['discount_percentage'] > 60){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Discount percentage must be less than 60%',
-                ], 400));
+            throw new DiscountPercentageTooHighException();
         }
 
         return $this->couponRepository->createCoupon($couponData);
@@ -42,19 +43,11 @@ class CouponService{
         $end_date = $couponData['end_date'] ?? null;
 
         if(!$start_date && $end_date && $end_date <= $couponDatabase->start_date){
-            throw new HttpResponseException(
-                response()->json([
-                    'message'=>'End date must be previous than start date'
-                ], 400)
-            );
+            throw new EndDateNotAfterStartDateException();
         }
 
         if(empty($couponData)){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Nothing to update!'
-                ], 400)
-            );
+            throw new NothingToUpdateException();
         }
 
         return $this->couponRepository->updateCoupon($couponId, $couponData);
@@ -73,10 +66,7 @@ class CouponService{
         $couponDatabase = $this->couponRepository->getCouponDisabled($couponId);
 
         if($couponDatabase->deleted_at == null){
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Coupon not deleted or expired for this renewal',
-                ], 400));
+            throw new CouponNotExpired();
         }
 
         $couponData['deleted_at'] = null;
