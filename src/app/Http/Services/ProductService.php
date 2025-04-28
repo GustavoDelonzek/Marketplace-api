@@ -46,15 +46,26 @@ class ProductService{
             throw new NothingToUpdateException();
         }
 
-        return $this->productRepository->updateProduct($productId, $productData);
+        $updated = $this->productRepository->updateProduct($productId, $productData);
+
+        if(!$updated){
+            throw new NothingToUpdateException();
+        }
+
+        return $updated;
     }
 
     public function updateStock($productId, $productData){
         if(empty($productData)){
             throw new NothingToUpdateException();
         }
+        $updated = $this->productRepository->updateProduct($productId, $productData);
 
-        return $this->productRepository->updateProduct($productId, $productData);
+        if(!$updated){
+            throw new NothingToUpdateException();
+        }
+
+        return $updated;
     }
 
     public function deleteProduct( $productId){
