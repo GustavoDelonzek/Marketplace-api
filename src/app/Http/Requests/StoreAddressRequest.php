@@ -25,9 +25,9 @@ class StoreAddressRequest extends FormRequest
             'street' => 'required|string|min:6',
             'number' => 'required|integer',
             'zip' => 'required|string|min:6|max:8',
-            'city' => 'required|string',
-            'state' => 'required|string',
-            'country' => 'required|string',
+            'city' => 'required|string|min:3',
+            'state' => 'required|string|min:3',
+            'country' => 'required|string|min:3',
         ];
     }
 }

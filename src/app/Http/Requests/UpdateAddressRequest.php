@@ -25,9 +25,9 @@ class UpdateAddressRequest extends FormRequest
             'street' => 'sometimes|string|min:6',
             'number' => 'sometimes|integer',
             'zip' => 'sometimes|string|min:6|max:8',
-            'city' => 'sometimes|string',
-            'state' => 'sometimes|string',
-            'country' => 'sometimes|string',
+            'city' => 'sometimes|string|min:3',
+            'state' => 'sometimes|string|min:3',
+            'country' => 'sometimes|string|min:3',
         ];
     }
 }

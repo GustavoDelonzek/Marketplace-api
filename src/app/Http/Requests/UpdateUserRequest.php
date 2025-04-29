@@ -23,7 +23,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|min:6',
-            'email' => 'sometimes|email|unique:users',
+            'email' => 'sometimes|email|unique:users|max:255',
         ];
     }
 }

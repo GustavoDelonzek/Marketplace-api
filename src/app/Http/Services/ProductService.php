@@ -4,7 +4,9 @@ namespace App\Http\Services;
 
 use App\Exceptions\Business\ImageNotFoundException;
 use App\Exceptions\Business\NothingToUpdateException;
+use App\Exceptions\Business\ProductNotFoundException;
 use App\Exceptions\Http\BadRequestException;
+use App\Exceptions\Http\NotFoundException;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
@@ -13,7 +15,6 @@ use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
 
 class ProductService{
     use CanLoadRelationships;
@@ -37,7 +38,13 @@ class ProductService{
 
     public function showProduct($productId){
         $productQuery = $this->productRepository->showProduct($productId);
+
+        if(!$productQuery){
+            throw new ProductNotFoundException();
+        }
+
         $product = $this->loadRelationships($productQuery);
+
         return new ProductResource($product);
     }
 
@@ -79,6 +86,11 @@ class ProductService{
 
     public function updateImage($productId, $image){
         $product = $this->productRepository->showProduct($productId);
+
+        if(!$product){
+            throw new ProductNotFoundException();
+        }
+
         $imageNome = Str::uuid() . '.' . $image->getClientOriginalExtension();
 
 
@@ -93,6 +105,10 @@ class ProductService{
 
     public function showImage($productId){
         $product = $this->productRepository->showProduct($productId);
+
+        if(!$product){
+            throw new ProductNotFoundException();
+        }
 
         if(!$product->image_path || !Storage::exists($product->image_path)){
             throw new ImageNotFoundException();
