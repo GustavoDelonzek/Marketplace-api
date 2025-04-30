@@ -26,7 +26,7 @@
             @foreach($orders as $order)
             <tr>
                 <td>{{ $order->id }}</td>
-                <td>{{ $order->user->name }}</td>
+                <td>{{ $order->user->email }}</td>
                 <td>{{ $order->order_date }}</td>
                 <td>{{ $order->status }}</td>
                 <td>R$ {{ number_format($order->total_amount, 2) }}</td>
