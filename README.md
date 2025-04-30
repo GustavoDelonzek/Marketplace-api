@@ -31,3 +31,24 @@ composer update
 php artisan key:generate
 php artisan migrate
 ``` 
+
+## Rodando os seeders
+
+Para rodar os seeders, rode o comando a seguir:
+
+```bash
+  php artisan db:seed
+```
+
+Ao rodar esse comando, irá popular as seguintes tabelas:
+
+- Addresses
+- Categories
+- Coupons
+- Discounts
+- Products
+- Users
+## Documentação
+
+Para entender todas as funcionalidades e rotas, acesse a documentação [aqui](https://github.com/GustavoDelonzek/Marketplace-api/blob/main/src/README.md).
+
