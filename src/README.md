@@ -1,4 +1,4 @@
-## Documentação da API
+# Documentação Marketplace API  
 
 Segue abaixo o esquema do banco de dados:
 
@@ -6,14 +6,13 @@ Segue abaixo o esquema do banco de dados:
 
 
 ---
-### Autenticação
----
+## Autenticação
 
-#### Registrar usuário
+### Registrar usuário
 ```http
 POST /api/register
 ```
-##### Não requer autenticação
+#### Não requer autenticação
 
 | Parâmetro     | Tipo     | Descrição                     |
 | :------------- | :------- | :------------------------------ |
@@ -22,11 +21,11 @@ POST /api/register
 | `password`     | `string` | **Obrigatório**. Senha segura       |
 | `password_confirmation` | `string` | **Obrigatório**. Confirmação da senha |
 
-#### Login
+### Login
 ```http
 POST /api/login
 ```
-##### Não requer autenticação
+#### Não requer autenticação
 
 
 | Parâmetro     | Tipo     | Descrição                     |
@@ -35,11 +34,11 @@ POST /api/login
 | `password`     | `string` | **Obrigatório**. Senha              |
 
 
-#### Verificação de email
+### Verificação de email
 ```http
 GET /api/email/verify/{id}/{hash}
 ```
-##### Requer autenticação(token)
+#### Requer autenticação(token)
 
 
 | Parâmetro | Tipo     | Descrição                    |
@@ -47,29 +46,29 @@ GET /api/email/verify/{id}/{hash}
 | `id`      | `int`    | ID do usuário               |
 | `hash`    | `string` | Hash de verificação         |
 
-#### Reenviar email de verificação
+### Reenviar email de verificação
 ```http
 POST /api/email/verification-notification
 ```
-##### Requer autenticação(token)
+#### Requer autenticação(token)
 
 
-#### Enviar email de recuperação de senha
+### Enviar email de recuperação de senha
 ```http
 POST /api/password/forgot-password
 ```
-##### Requer autenticação(token)
+#### Requer autenticação(token)
 
 | Parâmetro     | Tipo     | Descrição                     |
 | :------------- | :------- | :------------------------------ |
 | `email`        | `string` | **Obrigatório**.
 
 
-#### Validar token de recuperação de senha
+### Validar token de recuperação de senha
 ```http
 POST /api/password/reset-password
 ```
-##### Requer autenticação(token)
+#### Requer autenticação(token)
 
 | Parâmetro     | Tipo     | Descrição                     |
 | :------------- | :------- | :------------------------------ |
@@ -80,15 +79,15 @@ POST /api/password/reset-password
 
 ---
 
-### Categorias
----
+## Categorias
 
-#### Listar todas categorias
+
+### Listar todas categorias
 ```http
 GET /api/categories
 ```
-##### Não requer autenticação
-##### Retorna
+#### Não requer autenticação
+#### Retorna
 ```json
 [
     {
@@ -111,7 +110,7 @@ Para obter os produtos relacionados as categorias, basta utilizar o "include" no
 ```http
 GET /api/categories?include=products
 ```
-##### Retorna
+#### Retorna
 ```json
 {
     "data": [
@@ -145,17 +144,17 @@ GET /api/categories?include=products
 }
 ```
 
-#### Retornar apenas uma categoria
+### Retornar apenas uma categoria
 ```http
 GET /api/categories/{id}
 ```
-##### Não requer autenticação
+#### Não requer autenticação
 
 | Parâmetro | Tipo     | Descrição                    |
 | :-------- | :------- | :------------------------- |
 | `id`      | `int`    | ID da categoria             |
 
-##### Retorna
+#### Retorna
 ```json
 {
     "id": 1,
@@ -170,7 +169,7 @@ Pode obter os produtos relacionados a uma categoria, basta utilizar o "include" 
 ```http
 GET /api/categories/{id}?include=products
 ```
-##### Retorna
+#### Retorna
 ```json
 {
     "id": 1,
@@ -191,4 +190,192 @@ GET /api/categories/{id}?include=products
 }
 ```
 
+### Criar uma categoria
+```http
+POST /api/categories
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `name`         | `string` | **Obrigatório**.
+| `description`  | `string` | **Não obrigatório**.
+
+
+### Atualizar uma categoria
+```http
+PUT /api/categories/{id}
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.
+| `name`         | `string` | **Obrigatório**.
+| `description`  | `string` | **Não obrigatório**.
+
+### Deletar uma categoria
+```http
+DELETE /api/categories/{id}
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
 ---
+
+## Produtos
+
+### Listar todos os produtos
+```http
+GET /api/products
+```
+#### Não requer autenticação
+#### Retorna
+```json
+[
+    {
+        "id": 1,
+        "name": "Casaco de lã",
+        "description": "Casaco de laranja",
+        "image_path": "public/products/1.jpg",
+        "stock": 10,
+        "price": 100,
+        "category_id": 1
+    },
+    ...
+]
+```
+
+Pode obter todos os produtos com a categoria, e/ou com os descontos relacionados, basta utilizar o "include" no endpoint.
+
+```http
+GET /api/products?include=category,discounts
+```
+#### Retorna
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "category_id": 1,
+            "name": "Casaco de lã",
+            "description": "Casaco de laranja",
+            "image_path": "public/products/1.jpg",
+            "stock": 10,
+            "price": 100,
+            "category": {
+                "id": 1,
+                "name": "Casacos",
+                "description": "Todos os tipos de casaco",
+                "image_path": "public/categories/1.jpg"
+            },
+            "discounts": [
+                {
+                    "id": 1,
+                    "description": "Desconto de R$ 10,00",
+                    "discount_percentage": 10,
+                    "start_date": "2021-01-01",
+                    "end_date": "2021-12-31",
+                    "product_id": 1
+                }
+            ]
+        },
+        ...
+    ]
+}
+```
+
+### Retornar apenas um produto
+```http
+GET /api/products/{id}
+```
+#### Não requer autenticação
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | ID do produto               |
+
+#### Retorna
+```json
+{
+    "id": 1,
+    "name": "Casaco de lã",
+    "description": "Casaco de laranja",
+    "image_path": "public/products/1.jpg",
+    "stock": 10,
+    "price": 100,
+    "category_id": 1
+}
+```
+
+Pode obter todos os produtos com a categoria, e/ou com os descontos relacionados, basta utilizar o "include" no endpoint.
+
+
+### Criar um produto
+```http
+POST /api/products
+```
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `name`         | `string` | **Obrigatório**.|
+| `description`  | `string` | **Não obrigatório**.|
+|`price`         | `number`    | **Obrigatório**.|
+| `stock`        | `int`    | **Obrigatório**.|
+| `category_id`  | `int`    | **Obrigatório**.|
+
+### Atualizar um produto
+```http
+PUT /api/products/{id}
+```
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `name`         | `string` | **Não obrigatório**.|
+| `description`  | `string` | **Não obrigatório**.|
+|`price`         | `number`    | **Não obrigatório**.|
+| `category_id`  | `int`    | **Não obrigatório**.|
+
+O estoque não é alterado por essa rota. Para alterar o estoque, utilize a rota de atualização de estoque.
+
+### Atualizar estoque de um produto
+```http
+POST /api/products/{id}/stock
+```
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `stock`        | `int`    | **Obrigatório**.|
+
+
+### Atualizar imagem de um produto
+```http
+POST /api/products/image/{id}
+```
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `image`        | `file` | **Obrigatório**.|
+
+
+
+### Deletar um produto
+```http
+DELETE /api/products/{id}
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+---
+
