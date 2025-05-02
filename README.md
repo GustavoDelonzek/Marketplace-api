@@ -32,6 +32,31 @@ php artisan key:generate
 php artisan migrate
 ``` 
 
+## Rotas padrão e acesso ao Banco de dados
+
+### Rota base da aplicação:
+
+```http
+Http://localhost:8005/api/
+```
+
+### Rota do PhpMyAdmin:
+
+```http
+Http://localhost:8075/
+```
+
+ | Campo    | Valor   |
+|----------|---------|
+| Usuário  | `root`  |
+| Senha    | `root`  |
+
+### Rota do MailHog:
+```http
+Http://localhost:8025/
+```
+
+
 ## Rodando os seeders
 
 Para rodar os seeders, rode o comando a seguir:
