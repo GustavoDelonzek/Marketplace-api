@@ -1,5 +1,37 @@
 # Documentação Marketplace API  
 
+## Sumário 
+### 1. Autenticação
+- [Registrar usuário](#registrar-usuário)
+- [Login](#login)
+- [Verificação de email](#verificação-de-email)
+- [Reenviar email de verificação](#reenviar-email-de-verificação)
+- [Enviar email de recuperação de senha](#enviar-email-de-recuperação-de-senha)
+- [Validar token de recuperação de senha](#validar-token-de-recuperação-de-senha)
+### 2. Categorias
+- [Listar todas categorias](#listar-todas-categorias)
+- [Retornar apenas uma categoria](#retornar-apenas-uma-categoria)
+- [Criar uma categoria](#criar-uma-categoria)
+- [Atualizar uma categoria](#atualizar-uma-categoria)
+- [Deletar uma categoria](#deletar-uma-categoria)
+### 3. Produtos
+- [Listar todos os produtos](#listar-todos-os-produtos)
+- [Retornar apenas um produto](#retornar-apenas-um-produto)
+- [Criar um produto](#criar-um-produto)
+- [Atualizar um produto](#atualizar-um-produto)
+- [Atualizar estoque de um produto](#atualizar-estoque-de-um-produto)
+- [Atualizar imagem de um produto](#atualizar-imagem-de-um-produto)
+- [Deletar um produto](#deletar-um-produto)
+
+### 4. Discounts
+- [Listar todos os descontos](#listar-todos-os-descontos)
+- [Retornar apenas um desconto](#retornar-apenas-um-desconto)
+- [Criar um desconto](#criar-um-desconto)
+- [Atualizar um desconto](#atualizar-um-desconto)
+- [Deletar um desconto](#deletar-um-desconto)
+
+## Banco de dados
+
 Segue abaixo o esquema do banco de dados:
 
 ![Exemplo](public/doc-images/database-schema.png)
@@ -378,4 +410,123 @@ DELETE /api/products/{id}
 | :-------- | :------- | :------------------------- |
 | `id`      | `int`    | **Obrigatório**.
 ---
+
+## Discounts
+
+### Listar todos os descontos
+```http
+GET /api/discounts
+```
+#### Não requer autenticação
+#### Retorna
+```json
+[
+    {
+        "id": 1,
+        "description": "Desconto de R$ 10,00",
+        "discount_percentage": 10,
+        "start_date": "2021-01-01",
+        "end_date": "2021-12-31",
+        "product_id": 1
+    },
+    ...
+]
+```
+
+Pode obter todos os descontos relacionados a um produto, basta utilizar o "include" no endpoint.
+
+```http 
+GET /api/discounts?include=product
+```
+#### Retorna
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "description": "Desconto de R$ 10,00",
+            "discount_percentage": 10,
+            "start_date": "2021-01-01",
+            "end_date": "2021-12-31",
+            "product": {
+                "id": 1,
+                "name": "Casaco de lã",
+                "description": "Casaco de laranja",
+                "image_path": "public/products/1.jpg",
+                "stock": 10,
+                "price": 100,
+                "category_id": 1
+            }
+        },
+        ...
+    ]
+}
+
+```
+
+### Retornar apenas um desconto
+```http
+GET /api/discounts/{id}
+```
+#### Não requer autenticação
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | ID do desconto               |
+
+#### Retorna
+```json
+{
+    "id": 1,
+    "description": "Desconto de R$ 10,00",
+    "discount_percentage": 10,
+    "start_date": "2021-01-01",
+    "end_date": "2021-12-31",
+    "product_id": 1
+}
+```
+
+Pode obter o produto relacionado, basta utilizar o "include" no endpoint.
+
+### Criar um desconto
+```http
+POST /api/discounts
+```
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `description`  | `string` | **Obrigatório**.|
+| `discount_percentage`  | `number`    | **Obrigatório**.|
+| `start_date`  | `date`    | **Obrigatório**.|
+| `end_date`  | `date`    | **Obrigatório**.|
+| `product_id`  | `int`    | **Obrigatório**.|
+
+
+### Atualizar um desconto
+```http
+PUT /api/discounts/{id}
+```
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `description`  | `string` | **Não obrigatório**.|
+| `discount_percentage`  | `number`    | **Não obrigatório**.|
+| `start_date`  | `date`    | **Não obrigatório**.|
+| `end_date`  | `date`    | **Não obrigatório**.|
+
+
+### Deletar um desconto
+```http
+DELETE /api/discounts/{id}
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+---
+
 
