@@ -36,15 +36,12 @@ php artisan migrate
 
 ### Rota base da aplicação:
 
-```http
 Http://localhost:8005/api/
-```
+
 
 ### Rota do PhpMyAdmin:
 
-```http
 Http://localhost:8075/
-```
 
  | Campo    | Valor   |
 |----------|---------|
@@ -52,9 +49,7 @@ Http://localhost:8075/
 | Senha    | `root`  |
 
 ### Rota do MailHog:
-```http
 Http://localhost:8025/
-```
 
 
 ## Rodando os seeders
