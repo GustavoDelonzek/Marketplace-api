@@ -30,6 +30,29 @@
 - [Atualizar um desconto](#atualizar-um-desconto)
 - [Deletar um desconto](#deletar-um-desconto)
 
+### 5. Coupons
+- [Listar todos os cupons](#listar-todos-os-cupons)
+- [Retornar apenas um cupon](#retornar-apenas-um-cupon)
+- [Criar um cupon](#criar-um-cupon)
+- [Atualizar um cupon](#atualizar-um-cupon)
+- [Deletar um cupon](#deletar-um-cupon)
+- [Retornar cupons desativados](#retornar-cupons-desativados)
+- [Renovar um cupon](#renovar-um-cupon)
+
+### 6. Cart
+- [Ver carrinho do usuário](#ver-carrinho-do-usuário)
+- [Ver itens do carrinho do usuário](#ver-itens-do-carrinho-do-usuário)
+- [Atualizar quantidade de um item do carrinho do usuário](#atualizar-quantidade-de-um-item-do-carrinho-do-usuário)
+- [Deletar um item do carrinho do usuário](#deletar-um-item-do-carrinho-do-usuário)
+- [Limpar o carrinho do usuário](#limpar-o-carrinho-do-usuário)
+
+### 7. Orders
+- [Listar todos os pedidos](#listar-todos-os-pedidos)
+- [Retornar apenas um pedido](#retornar-apenas-um-pedido)
+- [Criar um pedido](#criar-um-pedido)
+- [Cancelar um pedido](#cancelar-um-pedido)
+- [Alterar status de um pedido](#alterar-status-de-um-pedido)
+
 ## Banco de dados
 
 Segue abaixo o esquema do banco de dados:
@@ -529,4 +552,332 @@ DELETE /api/discounts/{id}
 | `id`      | `int`    | **Obrigatório**.
 ---
 
+## Coupons
 
+### Listar todos os cupons
+```http
+GET /api/coupons
+```
+#### Não requer autenticação
+#### Retorna
+```json
+[
+    {
+        "id": 1,
+        "code": "CODE-YAML",
+        "discount_percentage": 10,
+        "start_date": "2021-01-01",
+        "end_date": "2021-12-31",
+    },
+    ...
+]
+```
+
+### Retornar apenas um cupon
+```http
+GET /api/coupons/{id}
+```
+#### Não requer autenticação
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | ID do cupon               |
+
+#### Retorna
+```json
+{
+    "id": 1,
+    "code": "CODE-YAML",
+    "discount_percentage": 10,
+    "start_date": "2021-01-01",
+    "end_date": "2021-12-31",
+}
+```
+
+### Criar um cupon
+```http
+POST /api/coupons
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `code`         | `string` | **Obrigatório**.|
+| `discount_percentage`  | `number`    | **Obrigatório**.|
+| `start_date`  | `date`    | **Obrigatório**.|
+| `end_date`  | `date`    | **Obrigatório**.|
+
+### Atualizar um cupon
+```http
+PUT /api/coupons/{id}
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `code`         | `string` | **Não obrigatório**.|
+| `discount_percentage`  | `number`    | **Não obrigatório**.|
+| `start_date`  | `date`    | **Não obrigatório**.|
+| `end_date`  | `date`    | **Não obrigatório**.|
+
+
+### Deletar um cupon
+```http
+DELETE /api/coupons/{id}
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+
+
+### Retornar cupons desativados
+```http
+GET /api/coupons/disabled
+```
+#### Não requer autenticação
+#### Retorna
+```json
+[
+    {
+        "id": 1,
+        "code": "CODE-YAML",
+        "discount_percentage": 10,
+        "start_date": "2021-01-01",
+        "end_date": "2021-12-31",
+        "deleted_at": "2021-12-31",
+    },
+    ...
+]
+```
+
+### Renovar um cupon
+```http
+POST /api/coupons/{id}/renew
+```
+#### Requer autenticação (ADMIN)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+
+---
+
+## Cart 
+
+### Ver carrinho do usuário
+```http
+GET /api/cart
+```
+#### Requer autenticação (CLIENT)
+#### Retorna
+```json
+{
+    "data": {
+        "id": 1,
+        "user_id": 1,
+    }
+}
+```
+
+### Ver itens do carrinho do usuário
+```http
+GET /api/cart/items
+```
+#### Requer autenticação (CLIENT)
+#### Retorna
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "items": [
+                {
+                    "id": 1,
+                    "product_id": 1,
+                    "quantity": 1,
+                    "unit_price": 100,   
+                }
+            ]
+        },
+        ...
+    ]
+}
+```
+
+Pode obter os produtos relacionados, basta utilizar o "include" no endpoint. Ver possiveis relações no service ```CartService.php```.
+
+### Atualizar quantidade de um item do carrinho do usuário
+```http
+PUT /api/cart/items/
+```
+#### Requer autenticação (CLIENT)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `quantity`     | `int`    | **Obrigatório**.|
+| `product_id`   | `int`    | **Obrigatório**.|
+
+### Deletar um item do carrinho do usuário
+```http
+DELETE /api/cart/items
+```
+#### Requer autenticação (CLIENT)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `product_id`   | `int`    | **Obrigatório**.
+
+### Limpar o carrinho do usuário
+```http
+DELETE /api/cart/clear
+```
+#### Requer autenticação (CLIENT)
+
+---
+
+## Orders
+
+### Listar todos os pedidos
+
+```http
+GET /api/orders
+```
+
+#### Requer autenticação (CLIENT)
+
+#### Retorna
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "address_id": 1,
+            "order_date": "2021-12-31",
+            "status": "pending",
+            "total_amount": 100,
+            "order_items": [
+                {
+                    "id": 1,
+                    "order_id": 1,
+                    "product_id": 1,
+                    "quantity": 1,
+                    "unit_price": 100,
+                },
+                ...
+            ]
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "address_id": 1,
+            "order_date": "2021-12-31",
+            "status": "pending",
+            "total_amount": 100,
+            "order_items": [
+                {
+                    "id": 1,
+                    "order_id": 1,
+                    "product_id": 1,
+                    "quantity": 1,
+                    "unit_price": 100,
+                }
+            ]
+        }
+    ]
+}
+
+```
+
+Pode obter os produtos relacionados ao order item, basta utilizar o "include" no endpoint. Ver possiveis relações no service ```OrderService.php```.
+
+### Retornar apenas um pedido
+
+```http 
+GET /api/orders/{id}
+```
+
+#### Requer autenticação (CLIENT)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+
+#### Retorna
+```json
+{
+    "id": 1,
+    "user_id": 1,
+    "address_id": 1,
+    "order_date": "2021-12-31",
+    "status": "pending",
+    "total_amount": 100,
+    "order_items": [
+        {
+            "id": 1,
+            "order_id": 1,
+            "product_id": 1,
+            "quantity": 1,
+            "unit_price": 100,
+        }
+    ]
+}
+```
+
+Pode obter o produto relacionados ao order item, basta utilizar o "include" no endpoint. Ver possiveis relações no service ```OrderService.php```.
+
+### Criar um pedido
+
+```http
+POST /api/orders
+```
+
+#### Requer autenticação (CLIENT)
+
+Requer ter items no carrinho do usuário.
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+|`address_id`    | `int`    | **Obrigatório**.|
+|`coupon_id`     | `int`    | **Obrigatório**.|
+
+
+### Cancelar um pedido
+
+
+```http
+DELETE /api/orders/{id}
+```
+Se o pedido passou do status de processing, ele não será cancelado.
+#### Requer autenticação (CLIENT)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+
+
+### Alterar status de um pedido
+
+```http
+PUT /api/orders/{id}
+```
+
+#### Requer autenticação (MODERATOR)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `status`       | `string` | **Obrigatório**.|
+
+### Gerar relátorio de vendas semanal
+```http
+GET /api/relatory/orders
+```
+#### Requer autenticação (MODERATOR)
+#### Retorna
+Retorna pdf com relatório de vendas semanal. Inclundo o id das orders, email do cliente, data de criação, status e total do pedido.

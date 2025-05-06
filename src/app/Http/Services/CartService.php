@@ -32,6 +32,9 @@ class CartService{
 
     public function showCart($userId){
         $cartQuery = $this->cartRepository->showCart($userId);
+        if(!$cartQuery){
+            throw new ProductNotInYourCart();
+        }
         $cart = $this->loadRelationships($cartQuery);
         return new CartResource($cart);
     }
