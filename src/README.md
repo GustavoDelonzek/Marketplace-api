@@ -8,13 +8,26 @@
 - [Reenviar email de verificação](#reenviar-email-de-verificação)
 - [Enviar email de recuperação de senha](#enviar-email-de-recuperação-de-senha)
 - [Validar token de recuperação de senha](#validar-token-de-recuperação-de-senha)
-### 2. Categorias
+- [Criar um moderador](#criar-um-moderador)
+### 2. Perfil do usuário
+- [Ver seu perfil](#ver-seu-perfil)
+- [Atualizar seu perfil](#atualizar-seu-perfil)
+- [Deletar seu perfil](#deletar-seu-perfil)
+- [Atualizar imagem de perfil](#atualizar-imagem-de-perfil)
+- [Exibir imagem de perfil](#exibir-imagem-de-perfil)
+### 3. Endereços
+- [Listar todos os endereços do usuário](#listar-todos-os-endereços-do-usuário)
+- [Retornar apenas um endereço do usuário](#retornar-apenas-um-endereço-do-usuário)
+- [Criar um endereço do usuário](#criar-um-endereço-do-usuário)
+- [Atualizar um endereço do usuário](#atualizar-um-endereço-do-usuário) 
+- [Deletar um endereço do usuário](#deletar-um-endereço-do-usuário)
+### 4. Categorias
 - [Listar todas categorias](#listar-todas-categorias)
 - [Retornar apenas uma categoria](#retornar-apenas-uma-categoria)
 - [Criar uma categoria](#criar-uma-categoria)
 - [Atualizar uma categoria](#atualizar-uma-categoria)
 - [Deletar uma categoria](#deletar-uma-categoria)
-### 3. Produtos
+### 5. Produtos
 - [Listar todos os produtos](#listar-todos-os-produtos)
 - [Retornar apenas um produto](#retornar-apenas-um-produto)
 - [Criar um produto](#criar-um-produto)
@@ -23,14 +36,14 @@
 - [Atualizar imagem de um produto](#atualizar-imagem-de-um-produto)
 - [Deletar um produto](#deletar-um-produto)
 
-### 4. Discounts
+### 6. Discounts
 - [Listar todos os descontos](#listar-todos-os-descontos)
 - [Retornar apenas um desconto](#retornar-apenas-um-desconto)
 - [Criar um desconto](#criar-um-desconto)
 - [Atualizar um desconto](#atualizar-um-desconto)
 - [Deletar um desconto](#deletar-um-desconto)
 
-### 5. Coupons
+### 7. Coupons
 - [Listar todos os cupons](#listar-todos-os-cupons)
 - [Retornar apenas um cupon](#retornar-apenas-um-cupon)
 - [Criar um cupon](#criar-um-cupon)
@@ -39,14 +52,14 @@
 - [Retornar cupons desativados](#retornar-cupons-desativados)
 - [Renovar um cupon](#renovar-um-cupon)
 
-### 6. Cart
+### 8. Cart
 - [Ver carrinho do usuário](#ver-carrinho-do-usuário)
 - [Ver itens do carrinho do usuário](#ver-itens-do-carrinho-do-usuário)
 - [Atualizar quantidade de um item do carrinho do usuário](#atualizar-quantidade-de-um-item-do-carrinho-do-usuário)
 - [Deletar um item do carrinho do usuário](#deletar-um-item-do-carrinho-do-usuário)
 - [Limpar o carrinho do usuário](#limpar-o-carrinho-do-usuário)
 
-### 7. Orders
+### 9. Orders
 - [Listar todos os pedidos](#listar-todos-os-pedidos)
 - [Retornar apenas um pedido](#retornar-apenas-um-pedido)
 - [Criar um pedido](#criar-um-pedido)
@@ -132,8 +145,180 @@ POST /api/password/reset-password
 | `password`     | `string` | **Obrigatório**.|
 | `password_confirmation` | `string` | **Obrigatório**.|
 
----
+### Criar um moderador
+```http
+POST /api/users/create-moderator
+```
+#### Requer autenticação (ADMIN)
 
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `name`         | `string` | **Obrigatório**.|
+| `email`        | `string` | **Obrigatório**.|
+| `password`     | `string` | **Obrigatório**.|
+| `password_confirmation` | `string` | **Obrigatório**.|
+
+
+
+---
+## User Profile
+### Ver seu perfil
+```http
+GET /api/users/me
+```
+#### Requer autenticação (CLIENT)
+
+#### Retorna
+```json
+{
+    "data": {
+        "id": 1,
+        "name": "Gustavo Delonze",
+        "email": "gustavo@gmail.com",
+        "image_path": "public/users/1.jpg",
+        "role": "client",
+    }
+}
+```
+
+Pode obter os endereços, pedidos, carrinho e produtos relacionados, basta utilizar o "include" no endpoint. Ver possiveis relações no service ```UserService.php```.
+
+### Atualizar seu perfil
+
+```http
+PUT /api/users/me   
+```
+
+#### Requer autenticação (CLIENT)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `name`         | `string` | **Não obrigatório**.| 
+| `email`        | `string` | **Não obrigatório**.|
+
+
+### Deletar seu perfil
+```http
+DELETE /api/users/me
+```
+
+#### Requer autenticação (CLIENT)
+
+
+### Atualizar imagem de perfil
+```http
+POST /api/users/image
+```
+
+#### Requer autenticação (CLIENT)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ | 
+| `image`        | `file` | **Obrigatório**.|
+
+### Exibir imagem de perfil
+```http
+GET /api/users/image
+```
+#### Requer autenticação (CLIENT)
+
+#### Retorna
+Retorna imagem do perfil.
+
+---
+## Endereços 
+
+### Listar todos os endereços do usuário
+
+```http
+GET /api/addresses
+```
+#### Requer autenticação (CLIENT)
+#### Retorna
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "street": "Rua do pao",
+            "number": "123",
+            "zip": "12345678",
+            "city": "São Paulo",
+            "state": "SP",
+            "country": "Brasil",
+        },
+        ...
+    ]
+}
+```
+
+### Retornar apenas um endereço do usuário
+```http
+GET /api/addresses/{id}
+```
+#### Requer autenticação (CLIENT)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+
+#### Retorna
+```json
+{
+    "id": 1,
+    "user_id": 1,
+    "street": "Rua do pao",
+    "number": "123",
+    "zip": "12345678",
+    "city": "São Paulo",
+    "state": "SP",
+    "country": "Brasil",
+}
+```
+
+### Criar um endereço do usuário
+```http
+POST /api/addresses
+```
+#### Requer autenticação (CLIENT)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `street`        | `string` | **Obrigatório**.|
+| `number`        | `string` | **Obrigatório**.|
+| `zip`        | `string` | **Obrigatório**.|
+| `city`        | `string` | **Obrigatório**.|
+| `state`        | `string` | **Obrigatório**.|
+| `country`        | `string` | **Obrigatório**.|
+
+### Atualizar um endereço do usuário
+```http
+PUT /api/addresses/{id}
+```
+#### Requer autenticação (CLIENT)
+
+| Parâmetro     | Tipo     | Descrição                     |
+| :------------- | :------- | :------------------------------ |
+| `id`           | `int`    | **Obrigatório**.|
+| `street`        | `string` | **Não obrigatório**.|
+| `number`        | `string` | **Não obrigatório**.|
+| `zip`        | `string` | **Não obrigatório**.|
+| `city`        | `string` | **Não obrigatório**.|
+| `state`        | `string` | **Não obrigatório**.|
+| `country`        | `string` | **Não obrigatório**.|
+
+### Deletar um endereço do usuário
+```http
+DELETE /api/addresses/{id}
+```
+#### Requer autenticação (CLIENT)
+
+| Parâmetro | Tipo     | Descrição                    |
+| :-------- | :------- | :------------------------- |
+| `id`      | `int`    | **Obrigatório**.
+
+---
 ## Categorias
 
 
